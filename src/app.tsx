@@ -10,6 +10,7 @@ import Login from './pages/login'
 
 import Profile from './pages/profile'
 import Home from './pages/home'
+import ModelsPage from './pages/models-list'
 
 const routes = [
   {
@@ -39,6 +40,10 @@ const routes = [
       {
         path: 'profile',
         element: <Profile />,
+      },
+      {
+        path: 'models',
+        element: <ModelsPage />,
       },
     ],
   },
