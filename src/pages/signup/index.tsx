@@ -10,13 +10,20 @@ import { Input } from '@/components/ui/input'
 
 import AuthWrapper from '@/components/auth-wrapper'
 
-type dataType = { email: string; password: string }
+type dataType = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string
+}
 
 function Signup() {
   const [showPass, setShowPass] = useState(false)
 
   const { register, formState: { errors, isSubmitting }, handleSubmit } = useForm<dataType>({
     defaultValues: {
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
     },
@@ -36,6 +43,34 @@ function Signup() {
       description='Enter your details to get started'
     >
       <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+        <div>
+          <label className='text-sm font-medium' htmlFor='firstName'>
+            First Name
+          </label>
+          <Input
+            id='firstName'
+            type='text'
+            placeholder='Enter your first name'
+            {...register('firstName', {
+              required: 'First Name is required',
+            })}
+          />
+          {errors.firstName && <div className='mt-0.5 text-xs text-red-600'>{errors.firstName.message}</div>}
+        </div>
+
+        <div>
+          <label className='text-sm font-medium' htmlFor='lastName'>
+            Last Name
+          </label>
+          <Input
+            id='lastName'
+            type='text'
+            placeholder='Enter your last name'
+            {...register('lastName')}
+          />
+          {errors.lastName && <div className='mt-0.5 text-xs text-red-600'>{errors.lastName.message}</div>}
+        </div>
+
         <div>
           <label className='text-sm font-medium' htmlFor='email'>
             Email
