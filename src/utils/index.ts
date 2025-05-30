@@ -1,4 +1,5 @@
 import { customAlphabet } from 'nanoid'
+import { voices } from './tts-models'
 
 export const delay = (ms: number = 1000) => new Promise((res) => setTimeout(res, ms))
 
@@ -86,4 +87,31 @@ export function formatDate(timestamp?: number): string {
     hour: '2-digit',
     minute: '2-digit',
   })
+}
+
+function formatName(name: string): string {
+  return name
+    .replace(/_/g, ' ')
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}
+
+export function capitalizeFirstSentence(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1)
+}
+
+export function getVoiceDetails(name: string) {
+  const voice = voices.find((v) => v.name.toLowerCase().includes(name.toLowerCase()))
+  return voice
+    ? {
+        formattedName: formatName(voice.name),
+        enhancedDescription: capitalizeFirstSentence(voice.description),
+        isPremium: voice.quality === 'A',
+      }
+    : {
+        formattedName: name,
+        enhancedDescription: '',
+        isPremium: false,
+      }
 }
