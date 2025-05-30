@@ -10,7 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // These modules won't be bundled as part of the Vite build of the Electron (main) side,
 // but they'll be included in the final Electron app build inside the asar file.
-const electronExternalModules: string[] = [];
+const electronExternalModules: string[] = ["@huggingface/transformers", "kokoro-js"];
 
 // https://vitejs.dev/config/
 export default defineConfig({

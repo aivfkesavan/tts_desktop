@@ -1,11 +1,13 @@
-import { BookOpenText, Laugh, Mic, Globe, Film, Gamepad2, Podcast, Flower } from 'lucide-react'
+import { useState } from 'react'
+import { BookOpenText, Laugh, Mic, Globe, Film, Gamepad2, Podcast, Flower, Loader } from 'lucide-react'
+import { toast } from 'sonner'
+
+import { useAgentPlayer } from '@/hooks/use-player'
+import useTTSStore from '@/store/tts'
+import { root } from '@/services/end-points'
+
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-
-interface MainPanelProps {
-  text: string
-  setText: (text: string) => void
-}
 
 const suggestions = [
   { label: 'Narrate a story', icon: BookOpenText, prompt: 'Once upon a time, in a land far, far away...' },
@@ -38,10 +40,51 @@ const suggestions = [
   },
 ]
 
-export const MainPanel = ({ text, setText }: MainPanelProps) => {
+function MainPanel() {
+  const [status, setStatus] = useState("idle")
+  const [text, setText] = useState("")
+
+  const isDownloaded = useTTSStore(s => s.isDownloaded)
+  const voice = useTTSStore(s => s.voice)
+  const speed = useTTSStore(s => s.speed)
+
+  const { play, stop } = useAgentPlayer()
+
+  async function getTTS(): Promise<void> {
+    try {
+      // if (!isDownloaded) {
+      //   toast("Please download the model first")
+      //   return
+      // }
+      if (text.trim() === "") return;
+
+      setStatus("loading")
+      const response = await fetch(`${root.localBackendUrl}/tts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, voice: "bf_emma", speed }),
+      })
+
+      if (!response.ok) return;
+
+      const data = await response.json()
+      setStatus("playing")
+      play(`${root.localBackendUrl}/tts/${data?.fileName}`, () => {
+        setStatus("idle")
+      })
+
+    } catch (err) {
+      setStatus("idle")
+    }
+  }
+
+  function onStop() {
+    stop()
+    setStatus("idle")
+  }
+
   return (
     <div className='h-full grid grid-rows-[auto_1fr_auto] bg-white'>
-      {/* ① Header row */}
       <div className='px-6 pt-6 pb-4'>
         <h1 className='text-xl font-semibold text-gray-900'>Text to Speech</h1>
         <p className='text-sm text-gray-500'>
@@ -49,7 +92,6 @@ export const MainPanel = ({ text, setText }: MainPanelProps) => {
         </p>
       </div>
 
-      {/* ② Scrollable middle row */}
       <div className='overflow-auto px-6'>
         <Textarea
           value={text}
@@ -59,9 +101,9 @@ export const MainPanel = ({ text, setText }: MainPanelProps) => {
         />
       </div>
 
-      {/* ③ Footer row (always at the bottom) */}
       <div className='px-6 py-8 pb-12 bg-white '>
         <p className='text-sm text-gray-500 mb-4'>Get started with</p>
+
         <div className='flex flex-wrap gap-2'>
           {suggestions.map((item, idx) => (
             <Button key={idx} variant='outline' className='text-sm' onClick={() => setText(item.prompt)}>
@@ -71,6 +113,28 @@ export const MainPanel = ({ text, setText }: MainPanelProps) => {
           ))}
         </div>
       </div>
+
+      {
+        !!text && status !== "playing" &&
+        <Button
+          onClick={getTTS}
+          disabled={status === "loading"}
+        >
+          {status === "loading" && <Loader className="size-4 animate-spin" />}
+          Generate
+        </Button>
+      }
+
+      {
+        status === "playing" &&
+        <Button
+          onClick={onStop}
+        >
+          Stop
+        </Button>
+      }
     </div>
   )
 }
+
+export default MainPanel
