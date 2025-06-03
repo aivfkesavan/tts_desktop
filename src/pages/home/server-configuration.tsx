@@ -21,110 +21,102 @@ function ServerConfiguration() {
   const [audioSampleRate, setAudioSampleRate] = useState("24000")
 
   return (
-    <Card className="bg-gray-900 border-gray-800 mt-2">
-      <CardContent className="pt-6 space-y-6">
+    <Card className="mt-2">
+      <CardContent className="py-4 space-y-6">
         <div className="mb-4">
-          <Badge variant="outline" className="border-yellow-400 text-yellow-400 mb-2">
+          <Badge variant="outline" className="border-primary text-primary mb-2">
             config.yaml
           </Badge>
-          <p className="text-gray-400 text-sm">
-            These settings are loaded from <code className="bg-black px-1 rounded">config.yaml</code> via an API call.
+          <p className="text-muted-foreground text-sm">
+            These settings are loaded from <code className="px-1 rounded">config.yaml</code> via an API call.
             Restart the server to apply changes to Host, Port, Model, or Path settings if modified here or directly in the file.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="server-host" className="text-white mb-2 block">Server Host</Label>
+            <Label htmlFor="server-host" className=" mb-2 block">Server Host</Label>
             <Input
               id="server-host"
               value={serverHost}
               onChange={(e) => setServerHost(e.target.value)}
-              className="bg-black border-gray-700 text-white"
             />
           </div>
           <div>
-            <Label htmlFor="server-port" className="text-white mb-2 block">Server Port</Label>
+            <Label htmlFor="server-port" className=" mb-2 block">Server Port</Label>
             <Input
               id="server-port"
               value={serverPort}
               onChange={(e) => setServerPort(e.target.value)}
-              className="bg-black border-gray-700 text-white"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="tts-device" className="text-white mb-2 block">TTS Device</Label>
+            <Label htmlFor="tts-device" className=" mb-2 block">TTS Device</Label>
             <Input
               id="tts-device"
               value={ttsDevice}
               onChange={(e) => setTtsDevice(e.target.value)}
-              className="bg-black border-gray-700 text-white"
             />
           </div>
           <div>
-            <Label htmlFor="default-voice" className="text-white mb-2 block">Default Voice ID</Label>
+            <Label htmlFor="default-voice" className=" mb-2 block">Default Voice ID</Label>
             <Input
               id="default-voice"
               value={defaultVoiceId}
               onChange={(e) => setDefaultVoiceId(e.target.value)}
-              className="bg-black border-gray-700 text-white"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="model-cache" className="text-white mb-2 block">Model Cache Path</Label>
+            <Label htmlFor="model-cache" className=" mb-2 block">Model Cache Path</Label>
             <Input
               id="model-cache"
               value={modelCachePath}
               onChange={(e) => setModelCachePath(e.target.value)}
-              className="bg-black border-gray-700 text-white"
             />
           </div>
           <div>
-            <Label htmlFor="predefined-voices" className="text-white mb-2 block">Predefined Voices Path</Label>
+            <Label htmlFor="predefined-voices" className=" mb-2 block">Predefined Voices Path</Label>
             <Input
               id="predefined-voices"
               value={predefinedVoicesPath}
               onChange={(e) => setPredefinedVoicesPath(e.target.value)}
-              className="bg-black border-gray-700 text-white"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="reference-audio" className="text-white mb-2 block">Reference Audio Path</Label>
+            <Label htmlFor="reference-audio" className=" mb-2 block">Reference Audio Path</Label>
             <Input
               id="reference-audio"
               value={referenceAudioPath}
               onChange={(e) => setReferenceAudioPath(e.target.value)}
-              className="bg-black border-gray-700 text-white"
             />
           </div>
           <div>
-            <Label htmlFor="output-path" className="text-white mb-2 block">Output Path</Label>
+            <Label htmlFor="output-path" className=" mb-2 block">Output Path</Label>
             <Input
               id="output-path"
               value={outputPath}
               onChange={(e) => setOutputPath(e.target.value)}
-              className="bg-black border-gray-700 text-white"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label className="text-white mb-2 block">Audio Output Format</Label>
+            <Label className=" mb-2 block">Audio Output Format</Label>
             <Select value={audioOutputFormat} onValueChange={setAudioOutputFormat}>
-              <SelectTrigger className="bg-black border-gray-700 text-white">
+              <SelectTrigger className="w-full">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-black border-gray-700">
+              <SelectContent>
                 <SelectItem value="wav">wav</SelectItem>
                 <SelectItem value="mp3">mp3</SelectItem>
                 <SelectItem value="flac">flac</SelectItem>
@@ -132,24 +124,24 @@ function ServerConfiguration() {
             </Select>
           </div>
           <div>
-            <Label htmlFor="sample-rate" className="text-white mb-2 block">Audio Sample Rate</Label>
+            <Label htmlFor="sample-rate" className=" mb-2 block">Audio Sample Rate</Label>
             <Input
               id="sample-rate"
               value={audioSampleRate}
               onChange={(e) => setAudioSampleRate(e.target.value)}
-              className="bg-black border-gray-700 text-white"
             />
           </div>
         </div>
 
-        <div className="flex space-x-4">
-          <Button className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black">
-            <Save className="w-4 h-4 mr-2" />
-            Save Server Configuration
+        <div className="df flex-wrap">
+          <Button className="flex-1">
+            <Save className="w-4 h-4" />
+            Save
           </Button>
-          <Button variant="outline" className="border-gray-700 hover:bg-gray-800">
-            <RotateCcw className="w-4 h-4 mr-2" />
-            Reset All Settings
+
+          <Button variant="outline" className='flex-1'>
+            <RotateCcw className="w-4 h-4" />
+            Reset
           </Button>
         </div>
       </CardContent>

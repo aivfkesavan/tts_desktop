@@ -34,7 +34,7 @@ function Home() {
   )
 
   return (
-    <div className='min-h-screen bg-background text-foreground'>
+    <div className='min-h-screen'>
       <Header />
 
       <div className='max-w-7xl mx-auto px-6 py-8'>
@@ -112,8 +112,8 @@ function Home() {
 
             <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced}>
               <CollapsibleTrigger asChild>
-                <Card className='cursor-pointer hover:bg-muted transition-colors'>
-                  <CardHeader className='pb-4'>
+                <Card className='cursor-pointer'>
+                  <CardHeader className='gap-0'>
                     <CardTitle className='flex items-center justify-between'>
                       <div className='flex items-center space-x-2'>
                         <Settings className='w-5 h-5' />
@@ -124,6 +124,7 @@ function Home() {
                   </CardHeader>
                 </Card>
               </CollapsibleTrigger>
+
               <CollapsibleContent>
                 <ServerConfiguration />
               </CollapsibleContent>

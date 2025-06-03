@@ -15,19 +15,19 @@ function Header() {
   const { theme, toggleTheme } = useTheme()
 
   return (
-    <div className="border-b border-gray-800 bg-black/50 backdrop-blur-sm sticky top-0 z-50">
+    <div className="border-b bg-background/70 backdrop-blur-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="df gap-4">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-yellow-400 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <Volume2 className="w-5 h-5 text-black" />
             </div>
             <h1 className="text-2xl font-bold">Chatterbox TTS Server</h1>
           </div>
 
           <Button
-            variant="outline"
-            className="ml-auto border-gray-700 hover:bg-yellow-400 hover:text-black transition-colors"
+            size="sm"
+            className="ml-auto"
           >
             API Docs
           </Button>
@@ -36,8 +36,9 @@ function Header() {
             size='icon'
             variant='secondary'
             onClick={toggleTheme}
-            className='w-8 h-8 rounded-lg text-muted-foreground hover:bg-muted transition-colors'
-            aria-label='Toggle Theme'>
+            className='w-8 h-8 rounded-lg border'
+            aria-label='Toggle Theme'
+          >
             {theme === 'dark' ? (
               <Sun className='h-5 w-5 text-white-400' />
             ) : (
@@ -57,12 +58,12 @@ function Header() {
 
             <DropdownMenuContent align='end' className='bg-popover text-foreground border-border'>
               <DropdownMenuItem onClick={() => navigate('/profile')} className='flex items-center gap-2'>
-                <User className='w-4 h-4 text-muted-foreground' />
+                <User className='w-4 h-4' />
                 Profile
               </DropdownMenuItem>
 
               <DropdownMenuItem onClick={() => mutate()} className='flex items-center gap-2'>
-                <LogOut className='w-4 h-4 text-muted-foreground' />
+                <LogOut className='w-4 h-4' />
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>

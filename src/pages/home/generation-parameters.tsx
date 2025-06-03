@@ -21,9 +21,9 @@ function GenerationParameters() {
   return (
     <Collapsible open={showParams} onOpenChange={setShowParams}>
       <CollapsibleTrigger asChild>
-        <Card className="bg-gray-900 border-gray-800 cursor-pointer hover:bg-gray-800 transition-colors">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-white flex items-center justify-between">
+        <Card className="cursor-pointer transition-colors">
+          <CardHeader className='gap-0'>
+            <CardTitle className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <Settings className="w-5 h-5" />
                 <span>Generation Parameters</span>
@@ -35,11 +35,11 @@ function GenerationParameters() {
       </CollapsibleTrigger>
 
       <CollapsibleContent>
-        <Card className="bg-gray-900 border-gray-800 mt-2">
-          <CardContent className="pt-6 space-y-6">
+        <Card className="mt-2">
+          <CardContent className="py-4 space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-white mb-2 block">Temperature ({temperature[0]})</Label>
+                <Label className="mb-2 block">Temperature ({temperature[0]})</Label>
                 <Slider
                   value={temperature}
                   onValueChange={setTemperature}
@@ -50,7 +50,7 @@ function GenerationParameters() {
                 />
               </div>
               <div>
-                <Label className="text-white mb-2 block">Exaggeration ({exaggeration[0]})</Label>
+                <Label className="mb-2 block">Exaggeration ({exaggeration[0]})</Label>
                 <Slider
                   value={exaggeration}
                   onValueChange={setExaggeration}
@@ -64,7 +64,7 @@ function GenerationParameters() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-white mb-2 block">CFG Weight ({cfgWeight[0]})</Label>
+                <Label className="mb-2 block">CFG Weight ({cfgWeight[0]})</Label>
                 <Slider
                   value={cfgWeight}
                   onValueChange={setCfgWeight}
@@ -75,7 +75,7 @@ function GenerationParameters() {
                 />
               </div>
               <div>
-                <Label className="text-white mb-2 block">Speed Factor ({speedFactor[0]})</Label>
+                <Label className="mb-2 block">Speed Factor ({speedFactor[0]})</Label>
                 <Slider
                   value={speedFactor}
                   onValueChange={setSpeedFactor}
@@ -89,23 +89,22 @@ function GenerationParameters() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="generation-seed" className="text-white mb-2 block">Generation Seed</Label>
+                <Label htmlFor="generation-seed" className="mb-2 block">Generation Seed</Label>
                 <Input
                   id="generation-seed"
                   value={generationSeed}
                   onChange={(e) => setGenerationSeed(e.target.value)}
-                  className="bg-black border-gray-700 text-white"
                   placeholder="101"
                 />
-                <p className="text-gray-400 text-xs mt-1">Integer for reproducible results. Some engines use 0 or -1 for random.</p>
+                <p className="text-xs mt-1">Integer for reproducible results. Some engines use 0 or -1 for random.</p>
               </div>
               <div>
-                <Label className="text-white mb-2 block">Language</Label>
+                <Label className="mb-2 block">Language</Label>
                 <Select value={language} onValueChange={setLanguage}>
-                  <SelectTrigger className="bg-black border-gray-700 text-white">
+                  <SelectTrigger className='w-full'>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-black border-gray-700">
+                  <SelectContent>
                     <SelectItem value="English">English</SelectItem>
                     <SelectItem value="Spanish">Spanish</SelectItem>
                     <SelectItem value="French">French</SelectItem>
@@ -115,7 +114,7 @@ function GenerationParameters() {
               </div>
             </div>
 
-            <Button className="w-full bg-yellow-400 hover:bg-yellow-500 text-black">
+            <Button className="w-full">
               <Save className="w-4 h-4 mr-2" />
               Save Generation Parameters
             </Button>
