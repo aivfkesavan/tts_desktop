@@ -89,7 +89,7 @@ function MainPanel() {
       const response = await fetch(`${root.localBackendUrl}/tts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, voice: 'bf_emma', speed }),
+        body: JSON.stringify({ text, voice, speed }),
       })
 
       if (!response.ok) return
@@ -108,6 +108,8 @@ function MainPanel() {
     stop()
     setStatus('idle')
   }
+
+  console.log('voice', voice)
 
   return (
     <div className='h-full flex-1 max-w-7xl mx-auto grid grid-rows-[auto_1fr_auto] bg-background'>
@@ -128,7 +130,7 @@ function MainPanel() {
           <div className='mb-6'>
             <Label className='text-sm font-medium text-foreground mb-2 flex items-center gap-2'>
               <Sparkles className='w-4 h-4 text-muted-foreground' />
-              Model
+              Voice
             </Label>
 
             <div className='flex gap-2 items-center'>

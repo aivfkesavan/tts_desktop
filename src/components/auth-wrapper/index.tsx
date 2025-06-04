@@ -1,9 +1,6 @@
-import { Moon, Sun } from 'lucide-react'
+import { Moon, Sun, Volume2 } from 'lucide-react'
 
 import { useTheme } from '@/components/common/theme-provider'
-
-import logoLight from '@/assets/imgs/icon.png'
-import logoDark from '@/assets/imgs/icon_v2.png'
 
 type props = {
   children: React.ReactNode
@@ -26,12 +23,8 @@ function AuthWrapper({ children, title, description }: props) {
       <div className='w-full max-w-md space-y-6'>
         <div className='bg-card border border-border rounded-3xl p-10 shadow-md'>
           <div className='space-y-1.5'>
-            <div className='flex flex-col justify-center items-center gap-2 mb-4'>
-              <img
-                src={theme === 'dark' ? logoDark : logoLight}
-                alt='NativeNode Logo'
-                className='w-13 h-13 object-contain rounded-sm transition-opacity duration-200'
-              />
+            <div className='w-fit mx-auto p-2 rounded-sm text-muted bg-primary'>
+              <Volume2 className='w-9 h-9' />
             </div>
 
             <div>

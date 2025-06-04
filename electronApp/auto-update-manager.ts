@@ -7,7 +7,7 @@ function autoUpdateManager(win: BrowserWindow) {
   autoUpdater.autoInstallOnAppQuit = true
   autoUpdater.setFeedURL({
     provider: 'generic',
-    url: 'https://releases.nidum.ai/nativenode/',
+    url: 'https://releases.nidum.ai/texttospeech/',
   })
 
   autoUpdater.on('checking-for-update', () => {

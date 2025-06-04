@@ -25,7 +25,7 @@ function Nav() {
             <div className='p-1.5 rounded-sm text-muted bg-primary'>
               <Volume2 className='w-5 h-5' />
             </div>
-            <span className='text-2xl font-bold text-black dark:text-white'>Chatterbox TTS Server</span>
+            <span className='text-2xl font-bold text-black dark:text-white'>Text to Speech</span>
           </div>
 
           <div className='flex items-center gap-2 sm:gap-4'>

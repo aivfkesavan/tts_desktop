@@ -1,9 +1,9 @@
 appId: com.nidum.ai.native_node
-productName: NativeNode
+productName: TextToSpeech
 directories:
   buildResources: public
 win:
-  executableName: NativeNode
+  executableName: TextToSpeech
 nsis:
   artifactName: ${name}-${version}.${ext}
   shortcutName: ${productName}
@@ -14,4 +14,4 @@ appImage:
 npmRebuild: false
 publish:
   provider: generic
-  url: https://releases.nidum.ai/nativenode/
+  url: https://releases.nidum.ai/texttospeech/

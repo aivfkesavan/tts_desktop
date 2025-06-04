@@ -72,6 +72,10 @@ function Login() {
           {isPending ? 'Signing in...' : 'Sign in'}
         </Button>
 
+        <div className='text-center text-xs text-muted-foreground !mb-4 '>
+          Have a Nidum AI account? Use your credentials to sign in.
+        </div>
+
         <div className='text-center text-sm text-muted-foreground mt-6'>
           Don&apos;t have an account? {'  '}
           <Link to='/signup' className='text-primary hover:underline'>

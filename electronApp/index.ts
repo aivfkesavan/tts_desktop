@@ -23,10 +23,10 @@ let serverApp: any
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient('nativenode', process.execPath, [path.resolve(process.argv[1] as string)])
+    app.setAsDefaultProtocolClient('tts', process.execPath, [path.resolve(process.argv[1] as string)])
   }
 } else {
-  app.setAsDefaultProtocolClient('nativenode')
+  app.setAsDefaultProtocolClient('tts')
 }
 
 function createWindow() {
