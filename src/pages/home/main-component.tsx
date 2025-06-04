@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { AudioLines, Play, Square, Sparkles, Gauge, RotateCcw, Pause } from 'lucide-react'
+import { AudioLines, Play, Square, Sparkles, Gauge, RotateCcw, Pause, Loader } from 'lucide-react'
 
 import useTTSStore from '@/store/tts'
 import { voices } from '@/utils/tts-models'
@@ -277,9 +277,22 @@ function MainPanel() {
           )}
 
           {(hasChanged || !audioUrl) && trimmedText && (
-            <Button onClick={getTTS} variant='default' className='gap-2 text-black hover:bg-primary/90'>
-              <Play className='size-4 fill-black' />
-              <span>Generate</span>
+            <Button
+              onClick={getTTS}
+              variant='default'
+              disabled={status === 'loading'}
+              className='gap-2 text-black hover:bg-primary/90 transition-all'>
+              {status === 'loading' ? (
+                <>
+                  <Loader className='h-4 w-4 animate-spin' />
+                  <span>Generating...</span>
+                </>
+              ) : (
+                <>
+                  <Play className='size-4 fill-black' />
+                  <span>Generate</span>
+                </>
+              )}
             </Button>
           )}
         </div>
