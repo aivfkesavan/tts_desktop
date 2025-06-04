@@ -16,10 +16,10 @@ function SettingsPanel() {
   const [similarity, setSimilarity] = useState(0.75)
   const [stability, setStability] = useState(0.5)
 
-  const update = useTTSStore(s => s.update)
-  const models = useTTSStore(s => s.addedModels)
-  const voice = useTTSStore(s => s.voice)
-  const speed = useTTSStore(s => s.speed)
+  const update = useTTSStore((s) => s.update)
+  const models = useTTSStore((s) => s.addedModels)
+  const voice = useTTSStore((s) => s.voice)
+  const speed = useTTSStore((s) => s.speed)
 
   const navigate = useNavigate()
 
@@ -31,18 +31,18 @@ function SettingsPanel() {
     setStability(0.5)
     setSimilarity(0.75)
     setSpeakerBoost(true)
-    update({ voice: "", speed: 1 })
+    update({ voice: '', speed: 1 })
   }
 
   return (
     <TooltipProvider>
-      <div className='w-80 min-w-[320px] border-l border-gray-200 bg-white p-6 flex flex-col justify-between'>
+      <div className='w-80 min-w-[320px] border-l border-border bg-card p-6 flex flex-col justify-between'>
         <div>
-          <h2 className='text-lg font-semibold mb-6'>Settings</h2>
+          <h2 className='text-lg font-semibold mb-6 text-foreground'>Settings</h2>
 
           <div className='mb-6'>
-            <Label className='text-sm font-medium text-gray-700 mb-2 flex items-center gap-2'>
-              <Sparkles className='w-4 h-4 text-gray-500' />
+            <Label className='text-sm font-medium text-foreground mb-2 flex items-center gap-2'>
+              <Sparkles className='w-4 h-4 text-muted-foreground' />
               Model
             </Label>
 
@@ -58,14 +58,12 @@ function SettingsPanel() {
                       {m}
                     </SelectItem>
                   ))}
-
                   <SelectItem
                     value='add-model'
-                    onClick={e => {
+                    onClick={(e) => {
                       e.preventDefault()
                       handleAddModel()
-                    }}
-                  >
+                    }}>
                     + Add more models
                   </SelectItem>
                 </SelectContent>
@@ -83,8 +81,8 @@ function SettingsPanel() {
           </div>
 
           <div className='mb-6'>
-            <Label className='mb-2 text-sm flex items-center gap-2'>
-              <Gauge className='w-4 h-4 text-gray-500' />
+            <Label className='mb-2 text-sm flex items-center gap-2 text-foreground'>
+              <Gauge className='w-4 h-4 text-muted-foreground' />
               Speed
             </Label>
 
@@ -94,6 +92,7 @@ function SettingsPanel() {
               max={1}
               step={0.1}
               onValueChange={([val]) => update({ speed: val })}
+              className='h-2 [&_[data-slot=slider-track]]:bg-muted [&_[data-slot=slider-range]]:bg-primary [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-thumb]]:border [&_[data-slot=slider-thumb]]:border-primary'
             />
 
             <div className='flex justify-between text-xs text-muted-foreground mt-1'>
@@ -103,8 +102,8 @@ function SettingsPanel() {
           </div>
 
           <div className='mb-6'>
-            <Label className='mb-2 text-sm flex items-center gap-2'>
-              <Waves className='w-4 h-4 text-gray-500' />
+            <Label className='mb-2 text-sm flex items-center gap-2 text-foreground'>
+              <Waves className='w-4 h-4 text-muted-foreground' />
               Stability
             </Label>
             <Slider
@@ -113,7 +112,9 @@ function SettingsPanel() {
               max={1}
               step={0.05}
               onValueChange={([val]) => setStability(val)}
+              className='h-2 [&_[data-slot=slider-track]]:bg-muted [&_[data-slot=slider-range]]:bg-primary [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-thumb]]:border [&_[data-slot=slider-thumb]]:border-primary'
             />
+
             <div className='flex justify-between text-xs text-muted-foreground mt-1'>
               <span>More variable</span>
               <span>More stable</span>
@@ -121,8 +122,8 @@ function SettingsPanel() {
           </div>
 
           <div className='mb-6'>
-            <Label className='mb-2 text-sm flex items-center gap-2'>
-              <Volume2 className='w-4 h-4 text-gray-500' />
+            <Label className='mb-2 text-sm flex items-center gap-2 text-foreground'>
+              <Volume2 className='w-4 h-4 text-muted-foreground' />
               Similarity
             </Label>
             <Slider
@@ -131,7 +132,9 @@ function SettingsPanel() {
               max={1}
               step={0.05}
               onValueChange={([val]) => setSimilarity(val)}
+              className='h-2 [&_[data-slot=slider-track]]:bg-muted [&_[data-slot=slider-range]]:bg-primary [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-thumb]]:border [&_[data-slot=slider-thumb]]:border-primary'
             />
+
             <div className='flex justify-between text-xs text-muted-foreground mt-1'>
               <span>Low</span>
               <span>High</span>
@@ -139,7 +142,7 @@ function SettingsPanel() {
           </div>
 
           <div className='mb-6 flex items-center justify-between'>
-            <Label className='text-sm'>Speaker boost</Label>
+            <Label className='text-sm text-foreground'>Speaker boost</Label>
             <Switch checked={speakerBoost} onCheckedChange={setSpeakerBoost} />
           </div>
         </div>

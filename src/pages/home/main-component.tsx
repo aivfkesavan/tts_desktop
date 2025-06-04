@@ -1,5 +1,18 @@
 import { useState } from 'react'
-import { BookOpenText, Laugh, Mic, Globe, Film, Gamepad2, Podcast, Flower, Loader } from 'lucide-react'
+import {
+  BookOpenText,
+  Laugh,
+  Mic,
+  Globe,
+  Film,
+  Gamepad2,
+  Podcast,
+  Flower,
+  Loader,
+  AudioLines,
+  Play,
+  Square,
+} from 'lucide-react'
 import { toast } from 'sonner'
 
 import { useAgentPlayer } from '@/hooks/use-player'
@@ -8,6 +21,7 @@ import { root } from '@/services/end-points'
 
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 const suggestions = [
   { label: 'Narrate a story', icon: BookOpenText, prompt: 'Once upon a time, in a land far, far away...' },
@@ -41,12 +55,12 @@ const suggestions = [
 ]
 
 function MainPanel() {
-  const [status, setStatus] = useState("idle")
-  const [text, setText] = useState("")
+  const [status, setStatus] = useState('idle')
+  const [text, setText] = useState('')
 
-  const isDownloaded = useTTSStore(s => s.isDownloaded)
-  const voice = useTTSStore(s => s.voice)
-  const speed = useTTSStore(s => s.speed)
+  const isDownloaded = useTTSStore((s) => s.isDownloaded)
+  const voice = useTTSStore((s) => s.voice)
+  const speed = useTTSStore((s) => s.speed)
 
   const { play, stop } = useAgentPlayer()
 
@@ -56,38 +70,43 @@ function MainPanel() {
       //   toast("Please download the model first")
       //   return
       // }
-      if (text.trim() === "") return;
+      if (text.trim() === '') return
 
-      setStatus("loading")
+      setStatus('loading')
       const response = await fetch(`${root.localBackendUrl}/tts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, voice: "bf_emma", speed }),
+        body: JSON.stringify({ text, voice: 'bf_emma', speed }),
       })
 
-      if (!response.ok) return;
+      if (!response.ok) return
 
       const data = await response.json()
-      setStatus("playing")
+      setStatus('playing')
       play(`${root.localBackendUrl}/tts/${data?.fileName}`, () => {
-        setStatus("idle")
+        setStatus('idle')
       })
-
     } catch (err) {
-      setStatus("idle")
+      setStatus('idle')
     }
   }
 
   function onStop() {
     stop()
-    setStatus("idle")
+    setStatus('idle')
   }
 
   return (
-    <div className='h-full grid grid-rows-[auto_1fr_auto] bg-white'>
+    <div className='h-full grid grid-rows-[auto_1fr_auto] bg-background'>
       <div className='px-6 pt-6 pb-4'>
-        <h1 className='text-xl font-semibold text-gray-900'>Text to Speech</h1>
-        <p className='text-sm text-gray-500'>
+        <div className='flex items-center gap-2 mb-2'>
+          <div className='p-1.5 rounded-md text-primary'>
+            <AudioLines className='w-5 h-5' />
+          </div>
+          <h1 className='text-xl font-semibold text-foreground'>Text to Speech</h1>
+        </div>
+
+        <p className='text-sm text-muted-foreground'>
           Start typing here or paste any text you want to turn into lifelike speech...
         </p>
       </div>
@@ -97,12 +116,60 @@ function MainPanel() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder='Start typing here...'
-          className='w-full h-full resize-none border-none text-base shadow-none focus-visible:ring-0 focus-visible:ring-offset-0'
+          className='w-full h-full resize-none border-none text-base shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent text-foreground placeholder:text-muted-foreground'
         />
       </div>
+      {status !== 'playing' && !!text && (
+        <div className='px-6 pb-4 flex justify-end'>
+          <Button
+            onClick={getTTS}
+            disabled={status === 'loading'}
+            className={cn(
+              'w-auto mt-4 px-6 py-2 text-white font-medium transition-all duration-300 ease-out flex items-center gap-2 rounded-md',
+              'hover:shadow-lg hover:scale-[1.03] hover:bg-primary/90 active:scale-[0.98]',
+              'disabled:opacity-50 disabled:cursor-not-allowed'
+            )}>
+            {status === 'loading' ? (
+              <>
+                <span className='relative flex items-center justify-center'>
+                  <span className='absolute inline-flex h-5 w-5 animate-ping rounded-full bg-white opacity-40' />
+                  <Loader className='size-4 z-10 animate-spin fill-white' />
+                </span>
+                <span key='generating' className='fade-scale transition-all duration-300'>
+                  Generating...
+                </span>
+              </>
+            ) : (
+              <>
+                <Play className='size-4 fill-white' />
+                <span key='generate' className='fade-scale transition-all duration-300'>
+                  Generate
+                </span>
+              </>
+            )}
+          </Button>
+        </div>
+      )}
 
-      <div className='px-6 py-8 pb-12 bg-white '>
-        <p className='text-sm text-gray-500 mb-4'>Get started with</p>
+      {status === 'playing' && (
+        <div className='px-6 pb-4 flex justify-end'>
+          <Button
+            onClick={onStop}
+            variant='destructive'
+            className={cn(
+              'w-auto mt-4 px-6 py-2 text-white font-medium transition-all duration-300 ease-out flex items-center gap-2 rounded-md',
+              'hover:shadow-lg hover:scale-[1.03] hover:bg-destructive/90 active:scale-[0.98]'
+            )}>
+            <Square className='size-4 fill-white animate-spin-slow' />
+            <span key='stop' className='fade-scale transition-all duration-300'>
+              Stop
+            </span>
+          </Button>
+        </div>
+      )}
+
+      <div className='px-6 py-8 pb-12 bg-background'>
+        <p className='text-sm text-muted-foreground mb-4'>Get started with</p>
 
         <div className='flex flex-wrap gap-2'>
           {suggestions.map((item, idx) => (
@@ -113,26 +180,6 @@ function MainPanel() {
           ))}
         </div>
       </div>
-
-      {
-        !!text && status !== "playing" &&
-        <Button
-          onClick={getTTS}
-          disabled={status === "loading"}
-        >
-          {status === "loading" && <Loader className="size-4 animate-spin" />}
-          Generate
-        </Button>
-      }
-
-      {
-        status === "playing" &&
-        <Button
-          onClick={onStop}
-        >
-          Stop
-        </Button>
-      }
     </div>
   )
 }
