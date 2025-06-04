@@ -52,9 +52,7 @@ function DownloadProgressCard() {
           )}
 
           <div className='mt-8 mb-2 flex justify-between items-center'>
-            <span className='text-sm font-semibold text-neutral-700 dark:text-neutral-300'>
-              Downloading Update
-            </span>
+            <span className='text-sm font-semibold text-neutral-700 dark:text-neutral-300'>Downloading Update</span>
             <span className='text-sm text-neutral-500 dark:text-neutral-400'>{Math.floor(progress)}%</span>
           </div>
 
