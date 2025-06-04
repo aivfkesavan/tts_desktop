@@ -8,11 +8,7 @@ function Home() {
       <div className='flex flex-col min-h-screen'>
         <Nav />
 
-        <div className='flex flex-1'>
-          <div className='flex-1'>
-            <MainPanel />
-          </div>
-        </div>
+        <MainPanel />
       </div>
     </ModelGate>
   )

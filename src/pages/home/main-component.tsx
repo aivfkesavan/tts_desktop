@@ -13,23 +13,20 @@ import {
   Play,
   Square,
   Sparkles,
-  Plus,
   Gauge,
 } from 'lucide-react'
-import { toast } from 'sonner'
 
 import { useAgentPlayer } from '@/hooks/use-player'
 import useTTSStore from '@/store/tts'
 import { root } from '@/services/end-points'
-
-import { Textarea } from '@/components/ui/textarea'
-import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { Label } from '@/components/ui/label'
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useNavigate } from 'react-router-dom'
+import { Textarea } from '@/components/ui/textarea'
 import { Slider } from '@/components/ui/slider'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { voices } from '@/utils/tts-models'
 
 const suggestions = [
   {
@@ -77,13 +74,7 @@ const suggestions = [
 function MainPanel() {
   const [status, setStatus] = useState('idle')
   const [text, setText] = useState('')
-  const navigate = useNavigate()
 
-  const handleAddModel = () => {
-    navigate('/models')
-  }
-
-  const isDownloaded = useTTSStore((s) => s.isDownloaded)
   const update = useTTSStore((s) => s.update)
   const models = useTTSStore((s) => s.addedModels)
   const voice = useTTSStore((s) => s.voice)
@@ -124,7 +115,7 @@ function MainPanel() {
   }
 
   return (
-    <div className='h-full grid grid-rows-[auto_1fr_auto] bg-background'>
+    <div className='h-full flex-1 grid grid-rows-[auto_1fr_auto] bg-background'>
       <div className='flex flex-row justify-between px-6 pt-6 pb-4'>
         <div className=''>
           <div className='flex items-center gap-2 mb-2'>
@@ -137,6 +128,7 @@ function MainPanel() {
             Start typing here or paste any text you want to turn into lifelike speech...
           </p>
         </div>
+
         <div className=''>
           <div className='mb-6'>
             <Label className='text-sm font-medium text-foreground mb-2 flex items-center gap-2'>
@@ -146,27 +138,18 @@ function MainPanel() {
 
             <div className='flex gap-2 items-center'>
               <Select value={voice} onValueChange={(value) => update({ voice: value })}>
-                <SelectTrigger className='w-[200px]'>
+                <SelectTrigger className='w-[200px] capitalize'>
                   <SelectValue placeholder='Select model' />
                 </SelectTrigger>
 
-                <SelectContent>
-                  {models.map((m) => (
-                    <SelectItem key={m} value={m}>
-                      {m}
+                <SelectContent className='max-h-80'>
+                  {voices.map((m) => (
+                    <SelectItem key={m.name} value={m.name} className='capitalize'>
+                      {m.title}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant='default' size='icon' onClick={handleAddModel}>
-                    <Plus className='w-4 h-4' />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side='top'>Add more models</TooltipContent>
-              </Tooltip>
             </div>
           </div>
         </div>
@@ -177,9 +160,10 @@ function MainPanel() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder='Start typing here...'
-          className='w-full h-full resize-none border-none text-base shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent text-foreground placeholder:text-muted-foreground'
+          className='w-full h-full resize-none border-none text-base shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-muted dar:bg-transparent text-foreground placeholder:text-muted-foreground'
         />
       </div>
+
       {status !== 'playing' && !!text && (
         <div className='px-6 pb-4 flex justify-between gap-4 items-end'>
           <div className='w-56 mt-6 ml-4'>
