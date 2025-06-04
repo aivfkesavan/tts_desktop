@@ -12,6 +12,9 @@ import {
   AudioLines,
   Play,
   Square,
+  Sparkles,
+  Plus,
+  Gauge,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -22,6 +25,11 @@ import { root } from '@/services/end-points'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useNavigate } from 'react-router-dom'
+import { Slider } from '@/components/ui/slider'
 
 const suggestions = [
   { label: 'Narrate a story', icon: BookOpenText, prompt: 'Once upon a time, in a land far, far away...' },
@@ -57,8 +65,15 @@ const suggestions = [
 function MainPanel() {
   const [status, setStatus] = useState('idle')
   const [text, setText] = useState('')
+  const navigate = useNavigate()
+
+  const handleAddModel = () => {
+    navigate('/models')
+  }
 
   const isDownloaded = useTTSStore((s) => s.isDownloaded)
+  const update = useTTSStore((s) => s.update)
+  const models = useTTSStore((s) => s.addedModels)
   const voice = useTTSStore((s) => s.voice)
   const speed = useTTSStore((s) => s.speed)
 
@@ -98,17 +113,51 @@ function MainPanel() {
 
   return (
     <div className='h-full grid grid-rows-[auto_1fr_auto] bg-background'>
-      <div className='px-6 pt-6 pb-4'>
-        <div className='flex items-center gap-2 mb-2'>
-          <div className='p-1.5 rounded-md text-primary'>
-            <AudioLines className='w-5 h-5' />
+      <div className='flex flex-row justify-between px-6 pt-6 pb-4'>
+        <div className=''>
+          <div className='flex items-center gap-2 mb-2'>
+            <div className='p-1.5 rounded-md text-primary'>
+              <AudioLines className='w-5 h-5' />
+            </div>
+            <h1 className='text-xl font-semibold text-foreground'>Text to Speech</h1>
           </div>
-          <h1 className='text-xl font-semibold text-foreground'>Text to Speech</h1>
+          <p className='text-sm text-muted-foreground'>
+            Start typing here or paste any text you want to turn into lifelike speech...
+          </p>
         </div>
+        <div className=''>
+          <div className='mb-6'>
+            <Label className='text-sm font-medium text-foreground mb-2 flex items-center gap-2'>
+              <Sparkles className='w-4 h-4 text-muted-foreground' />
+              Model
+            </Label>
 
-        <p className='text-sm text-muted-foreground'>
-          Start typing here or paste any text you want to turn into lifelike speech...
-        </p>
+            <div className='flex gap-2 items-center'>
+              <Select value={voice} onValueChange={(value) => update({ voice: value })}>
+                <SelectTrigger className='w-[200px]'>
+                  <SelectValue placeholder='Select model' />
+                </SelectTrigger>
+
+                <SelectContent>
+                  {models.map((m) => (
+                    <SelectItem key={m} value={m}>
+                      {m}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant='default' size='icon' onClick={handleAddModel}>
+                    <Plus className='w-4 h-4' />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side='top'>Add more models</TooltipContent>
+              </Tooltip>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className='overflow-auto px-6'>
@@ -120,7 +169,26 @@ function MainPanel() {
         />
       </div>
       {status !== 'playing' && !!text && (
-        <div className='px-6 pb-4 flex justify-end'>
+        <div className='px-6 pb-4 flex justify-between gap-4 items-end'>
+          <div className='w-56 mt-6 ml-4'>
+            <Label className='mb-2 text-sm flex items-center gap-2 text-foreground'>
+              <Gauge className='w-4 h-4 text-muted-foreground' />
+              Speed
+            </Label>
+            <Slider
+              value={[speed]}
+              min={0}
+              max={1}
+              step={0.1}
+              onValueChange={([val]) => update({ speed: val })}
+              className='h-2 [&_[data-slot=slider-track]]:bg-muted [&_[data-slot=slider-range]]:bg-primary [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-thumb]]:border [&_[data-slot=slider-thumb]]:border-primary'
+            />
+            <div className='flex justify-between text-xs text-muted-foreground mt-1'>
+              <span>Slower</span>
+              <span>Faster</span>
+            </div>
+          </div>
+
           <Button
             onClick={getTTS}
             disabled={status === 'loading'}

@@ -1,4 +1,3 @@
-import SettingsPanel from './settings-panel'
 import ModelGate from '../onboarding-model/model-gate'
 import MainPanel from './main-component'
 import Nav from './nav'
@@ -11,11 +10,8 @@ function Home() {
 
         <div className='flex flex-1'>
           <div className='flex-1'>
-            <MainPanel
-            />
+            <MainPanel />
           </div>
-
-          <SettingsPanel />
         </div>
       </div>
     </ModelGate>
