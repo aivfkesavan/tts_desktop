@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { root } from '@/services/end-points'
-import { toast } from 'sonner'
+// import { toast } from 'sonner'
 
 type Downloads = {
   [id: string]: {
@@ -17,7 +17,7 @@ type DownloadStore = {
   }) => Promise<void>
 }
 
-const duration = 3000
+// const duration = 3000
 
 const useDownloadsStore = create<DownloadStore>((set) => ({
   downloads: {},
@@ -37,14 +37,14 @@ const useDownloadsStore = create<DownloadStore>((set) => ({
       while (true) {
         const { value, done } = await reader?.read() || {}
         if (done) {
-          toast.success("TTS setup finished", {
-            className: "py-2",
-            richColors: true,
-            closeButton: true,
-            position: "top-center",
-            duration,
-            id: "tts",
-          })
+          // toast.success("TTS setup finished", {
+          //   className: "py-2",
+          //   richColors: true,
+          //   closeButton: true,
+          //   position: "top-center",
+          //   duration,
+          //   id: "tts",
+          // })
           set({ downloads: {} })
           onSuccess?.()
           break
@@ -62,21 +62,21 @@ const useDownloadsStore = create<DownloadStore>((set) => ({
             }
             if (data) {
               let perc = data?.progress ? Math.ceil(data?.progress) : 0
-              if (!comps[data?.file]) {
-                comps[data?.file] = `component ${Object.keys(comps).length + 1}`
-              }
-              let res = `${comps[data?.file]}: ${perc}`
+              // if (!comps[data?.file]) {
+              //   comps[data?.file] = `component ${Object.keys(comps).length + 1}`
+              // }
+              // let res = `${comps[data?.file]}: ${perc}`
 
-              toast.loading("TTS setup", {
-                className: "py-2",
-                description: `Progress: Models ${res}%`,
-                descriptionClassName: "text-xs",
-                richColors: false,
-                closeButton: false,
-                position: "top-center",
-                duration,
-                id: "tts",
-              })
+              // toast.loading("TTS setup", {
+              //   className: "py-2",
+              //   description: `Progress: Models ${res}%`,
+              //   descriptionClassName: "text-xs",
+              //   richColors: false,
+              //   closeButton: false,
+              //   position: "top-center",
+              //   duration,
+              //   id: "tts",
+              // })
               set({
                 downloads: {
                   tts: {

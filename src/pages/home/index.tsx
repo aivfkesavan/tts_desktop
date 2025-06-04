@@ -1,16 +1,22 @@
-import ModelGate from '../onboarding-model/model-gate'
+import useTTSStore from '@/store/tts'
+
+import InitialSetup from '@/components/models/initial-setup'
 import MainPanel from './main-component'
 import Nav from './nav'
 
 function Home() {
-  return (
-    <ModelGate>
-      <div className='flex flex-col min-h-screen'>
-        <Nav />
+  const isDownloaded = useTTSStore(s => s.isDownloaded)
 
-        <MainPanel />
-      </div>
-    </ModelGate>
+  return (
+    <div className='flex flex-col min-h-screen'>
+      <Nav />
+      <MainPanel />
+
+      {
+        !isDownloaded &&
+        <InitialSetup />
+      }
+    </div>
   )
 }
 

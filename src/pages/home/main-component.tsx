@@ -18,6 +18,7 @@ import {
 
 import { useAgentPlayer } from '@/hooks/use-player'
 import useTTSStore from '@/store/tts'
+import { voices } from '@/utils/tts-models'
 import { root } from '@/services/end-points'
 import { cn } from '@/lib/utils'
 
@@ -26,7 +27,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { Slider } from '@/components/ui/slider'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { voices } from '@/utils/tts-models'
 
 const suggestions = [
   {
@@ -76,7 +76,6 @@ function MainPanel() {
   const [text, setText] = useState('')
 
   const update = useTTSStore((s) => s.update)
-  const models = useTTSStore((s) => s.addedModels)
   const voice = useTTSStore((s) => s.voice)
   const speed = useTTSStore((s) => s.speed)
 
@@ -84,10 +83,6 @@ function MainPanel() {
 
   async function getTTS(): Promise<void> {
     try {
-      // if (!isDownloaded) {
-      //   toast("Please download the model first")
-      //   return
-      // }
       if (text.trim() === '') return
 
       setStatus('loading')
@@ -115,7 +110,7 @@ function MainPanel() {
   }
 
   return (
-    <div className='h-full flex-1 grid grid-rows-[auto_1fr_auto] bg-background'>
+    <div className='h-full flex-1 max-w-7xl mx-auto grid grid-rows-[auto_1fr_auto] bg-background'>
       <div className='flex flex-row justify-between px-6 pt-6 pb-4'>
         <div className=''>
           <div className='flex items-center gap-2 mb-2'>
@@ -174,7 +169,7 @@ function MainPanel() {
             <Slider
               value={[speed]}
               min={0}
-              max={1}
+              max={1.5}
               step={0.1}
               onValueChange={([val]) => update({ speed: val })}
               className='h-2 [&_[data-slot=slider-track]]:bg-muted [&_[data-slot=slider-range]]:bg-primary [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-thumb]]:border [&_[data-slot=slider-thumb]]:border-primary'

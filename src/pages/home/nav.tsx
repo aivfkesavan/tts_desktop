@@ -19,13 +19,13 @@ function Nav() {
 
   return (
     <header className='bg-white dark:bg-background border-b border-border sticky top-0 z-10'>
-      <div className='mx-auto px-4 sm:px-6 lg:px-8'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='flex h-16 items-center justify-between'>
           <div className='flex items-center gap-2'>
             <div className='p-1.5 rounded-sm text-muted bg-primary'>
               <Volume2 className='w-5 h-5' />
             </div>
-            <span className='text-2xl font-bold text-black dark:text-white'>NativeNode</span>
+            <span className='text-2xl font-bold text-black dark:text-white'>Chatterbox TTS Server</span>
           </div>
 
           <div className='flex items-center gap-2 sm:gap-4'>
