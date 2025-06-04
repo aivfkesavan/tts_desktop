@@ -1,4 +1,4 @@
-import { Gauge, Waves, Volume2, Sparkles, Plus } from 'lucide-react'
+import { Gauge, Waves, Volume2, Sparkles, Plus, RefreshCw } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 import useTTSStore from '@/store/tts'
@@ -15,6 +15,7 @@ function SettingsPanel() {
   const [speakerBoost, setSpeakerBoost] = useState(true)
   const [similarity, setSimilarity] = useState(0.75)
   const [stability, setStability] = useState(0.5)
+  const [resetting, setResetting] = useState(false)
 
   const update = useTTSStore((s) => s.update)
   const models = useTTSStore((s) => s.addedModels)
@@ -28,10 +29,16 @@ function SettingsPanel() {
   }
 
   const resetValues = () => {
-    setStability(0.5)
-    setSimilarity(0.75)
-    setSpeakerBoost(true)
-    update({ voice: '', speed: 1 })
+    setResetting(true)
+
+    setTimeout(() => {
+      setStability(0.5)
+      setSimilarity(0.75)
+      setSpeakerBoost(true)
+      update({ voice: '', speed: 1 })
+
+      setResetting(false)
+    }, 500)
   }
 
   return (
@@ -58,14 +65,6 @@ function SettingsPanel() {
                       {m}
                     </SelectItem>
                   ))}
-                  <SelectItem
-                    value='add-model'
-                    onClick={(e) => {
-                      e.preventDefault()
-                      handleAddModel()
-                    }}>
-                    + Add more models
-                  </SelectItem>
                 </SelectContent>
               </Select>
 
@@ -87,7 +86,7 @@ function SettingsPanel() {
             </Label>
 
             <Slider
-              defaultValue={[speed]}
+              value={[speed]}
               min={0}
               max={1}
               step={0.1}
@@ -107,7 +106,7 @@ function SettingsPanel() {
               Stability
             </Label>
             <Slider
-              defaultValue={[stability]}
+              value={[stability]}
               min={0}
               max={1}
               step={0.05}
@@ -127,7 +126,7 @@ function SettingsPanel() {
               Similarity
             </Label>
             <Slider
-              defaultValue={[similarity]}
+              value={[similarity]}
               min={0}
               max={1}
               step={0.05}
@@ -147,8 +146,13 @@ function SettingsPanel() {
           </div>
         </div>
 
-        <Button variant='outline' onClick={resetValues}>
-          Reset values
+        <Button
+          variant='outline'
+          onClick={resetValues}
+          disabled={resetting}
+          className='group relative inline-flex items-center gap-2 transition-all rounded-lg px-4 py-2 text-sm font-medium'>
+          <RefreshCw className={`w-4 h-4 ${resetting ? 'animate-spin' : 'group-hover:animate-spin-slow'}`} />
+          {resetting ? 'Resetting...' : 'Reset values'}
         </Button>
       </div>
     </TooltipProvider>

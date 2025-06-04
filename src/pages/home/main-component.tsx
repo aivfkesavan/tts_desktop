@@ -125,15 +125,15 @@ function MainPanel() {
             onClick={getTTS}
             disabled={status === 'loading'}
             className={cn(
-              'w-auto mt-4 px-6 py-2 text-white font-medium transition-all duration-300 ease-out flex items-center gap-2 rounded-md',
+              'w-auto mt-4 px-6 py-2 text-black font-medium transition-all duration-300 ease-out flex items-center gap-2 rounded-md',
               'hover:shadow-lg hover:scale-[1.03] hover:bg-primary/90 active:scale-[0.98]',
               'disabled:opacity-50 disabled:cursor-not-allowed'
             )}>
             {status === 'loading' ? (
               <>
                 <span className='relative flex items-center justify-center'>
-                  <span className='absolute inline-flex h-5 w-5 animate-ping rounded-full bg-white opacity-40' />
-                  <Loader className='size-4 z-10 animate-spin fill-white' />
+                  <span className='absolute inline-flex h-5 w-5 animate-ping rounded-full bg-black opacity-40' />
+                  <Loader className='size-4 z-10 animate-spin fill-black' />
                 </span>
                 <span key='generating' className='fade-scale transition-all duration-300'>
                   Generating...
@@ -141,7 +141,7 @@ function MainPanel() {
               </>
             ) : (
               <>
-                <Play className='size-4 fill-white' />
+                <Play className='size-4 fill-black' />
                 <span key='generate' className='fade-scale transition-all duration-300'>
                   Generate
                 </span>

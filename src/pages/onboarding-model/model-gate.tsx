@@ -1,25 +1,18 @@
-import { useEffect, useState } from 'react'
+'use client'
+
 import OnboardingModal from './oboarding-model'
+import useTTSStore from '@/store/tts'
 
 export default function ModelGate({ children }: { children: React.ReactNode }) {
-  const [showModal, setShowModal] = useState(false)
-
-  useEffect(() => {
-    const hasModel = !!localStorage.getItem('selectedModel')
-    setShowModal(!hasModel)
-  }, [])
-
-  const handleComplete = () => {
-    setShowModal(false)
-  }
+  const isDownloaded = useTTSStore((state) => state.isDownloaded)
 
   return (
     <div className='relative w-full h-full'>
-      <div className={showModal ? 'blur-md pointer-events-none select-none' : ''}>{children}</div>
+      <div className={isDownloaded ? '' : 'blur-md pointer-events-none select-none'}>{children}</div>
 
-      {showModal && (
+      {!isDownloaded && (
         <div className='absolute inset-0 z-50 flex items-center justify-center bg-white/50 backdrop-blur-xs'>
-          <OnboardingModal onComplete={handleComplete} />
+          <OnboardingModal onComplete={() => {}} />
         </div>
       )}
     </div>

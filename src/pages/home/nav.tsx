@@ -1,14 +1,12 @@
 import { useNavigate } from 'react-router-dom'
-import { Moon, Sun, Plus, User, LogOut, RefreshCw, Speaker, Volume2 } from 'lucide-react'
+import { Moon, Sun, User, LogOut, RefreshCw, Volume2 } from 'lucide-react'
 
 import { useLogoutMutate } from '@/hooks/use-user'
 import { useTheme } from '@/components/common/theme-provider'
 
-import logo from '@/assets/imgs/icon.png'
-import logoV2 from '@/assets/imgs/icon_v2.png'
-
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
+import useTTSStore from '@/store/tts'
 
 function Nav() {
   const navigate = useNavigate()
@@ -16,30 +14,21 @@ function Nav() {
   const { theme, toggleTheme } = useTheme()
 
   const handleResetModel = () => {
-    localStorage.removeItem('selectedModel')
-    window.location.reload()
+    useTTSStore.getState().clear()
   }
 
   return (
     <header className='bg-white dark:bg-background border-b border-border sticky top-0 z-10'>
       <div className='mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='flex h-16 items-center justify-between'>
-          {/* Logo */}
           <div className='flex items-center gap-2'>
-            {/* <img
-              src={theme === 'dark' ? logoV2 : logo}
-              alt='NativeNode Logo'
-              className='h-8 w-8 object-contain transition-opacity duration-200 rounded-sm'
-            /> */}
             <div className='p-1.5 rounded-sm text-muted bg-primary'>
               <Volume2 className='w-5 h-5' />
             </div>
             <span className='text-2xl font-bold text-black dark:text-white'>NativeNode</span>
           </div>
 
-          {/* Right actions */}
           <div className='flex items-center gap-2 sm:gap-4'>
-            {/* Reset model test button */}
             <Button
               variant='ghost'
               size='icon'
@@ -49,7 +38,6 @@ function Nav() {
               <RefreshCw className='w-4 h-4' />
             </Button>
 
-            {/* Theme toggle */}
             <Button
               size='icon'
               variant='secondary'

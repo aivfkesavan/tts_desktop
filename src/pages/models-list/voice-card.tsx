@@ -1,10 +1,10 @@
 'use client'
 
-import { DownloadCloud, Loader2, Crown, Mars, Venus } from 'lucide-react'
-import { useState } from 'react'
+import { DownloadCloud, Loader2, Crown, Mars, Venus, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardTitle, CardContent } from '@/components/ui/card'
+import useTTSStore from '@/store/tts'
 
 interface VoiceCardProps {
   model: {
@@ -16,18 +16,18 @@ interface VoiceCardProps {
     gender: string
     language: string
   }
+  isDisabled: boolean
+  isDownloading: boolean
+  setDownloading: (name: string) => void
+  onDownloadComplete: () => void
 }
 
-export function VoiceCard({ model }: VoiceCardProps) {
-  const [downloading, setDownloading] = useState<string | null>(null)
-
-  const handleDownload = () => {
-    setDownloading(model.name)
-    setTimeout(() => setDownloading(null), 2000)
-  }
+export function VoiceCard({ model, isDisabled, isDownloading, setDownloading, onDownloadComplete }: VoiceCardProps) {
+  const addedModels = useTTSStore((state) => state.addedModels)
+  const isAlreadyDownloaded = addedModels.includes(model.name)
 
   return (
-    <Card className='flex flex-col justify-between p-6 shadow-sm border rounded-2xl h-full'>
+    <Card className='flex flex-col justify-between p-6 shadow-sm border rounded-2xl h-full transition-opacity duration-300'>
       <div className='flex flex-col gap-2'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-3'>
@@ -60,24 +60,34 @@ export function VoiceCard({ model }: VoiceCardProps) {
       </div>
 
       <div className='flex justify-end mt-4'>
-        <Button
-          variant='ghost'
-          size='sm'
-          className='flex items-center gap-2'
-          disabled={downloading === model.name}
-          onClick={handleDownload}>
-          {downloading === model.name ? (
-            <>
-              <Loader2 className='animate-spin h-4 w-4' />
-              Downloading...
-            </>
-          ) : (
-            <>
-              <DownloadCloud className='h-4 w-4' />
-              Download
-            </>
-          )}
-        </Button>
+        {isAlreadyDownloaded ? (
+          <Button
+            variant='secondary'
+            size='sm'
+            className='flex items-center gap-2 bg-green-100 text-green-800 dark:bg-[#001F01] dark:text-[#59F3A6] cursor-default'>
+            <CheckCircle className='h-4 w-4' />
+            Downloaded
+          </Button>
+        ) : (
+          <Button
+            onClick={() => setDownloading(model.name)}
+            disabled={isDisabled || isDownloading}
+            className='flex items-center gap-2'
+            variant='ghost'
+            size='sm'>
+            {isDownloading ? (
+              <>
+                <Loader2 className='animate-spin h-4 w-4' />
+                Downloading...
+              </>
+            ) : (
+              <>
+                <DownloadCloud className='h-4 w-4' />
+                Download
+              </>
+            )}
+          </Button>
+        )}
       </div>
     </Card>
   )

@@ -19,8 +19,7 @@ function AuthWrapper({ children, title, description }: props) {
       <button
         onClick={toggleTheme}
         aria-label='Toggle theme'
-        className='absolute top-4 right-4 p-2 rounded-full bg-muted text-foreground hover:bg-muted/80 transition'
-      >
+        className='absolute top-4 right-4 p-2 rounded-full bg-muted text-foreground hover:bg-muted/80 transition'>
         {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
       </button>
 
