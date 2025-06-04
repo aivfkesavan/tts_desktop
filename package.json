@@ -15,7 +15,7 @@
     "start": "vite dev",
     "prebuild": "rimraf ./dist ./dist-electron ./release",
     "preinstall": "npm install --cpu=wasm32 sharp --no-save",
-    "build": "tsc && vite build && electron-builder",
+    "build": "npm run prebuild && tsc && vite build && electron-builder",
     "build-win": "npm run prebuild && tsc && vite build && electron-builder --win --x64",
     "clean": "rm -rf ./node_modules ./dist ./dist-electron ./release ./models"
   },
