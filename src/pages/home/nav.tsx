@@ -13,9 +13,9 @@ function Nav() {
   const { mutate } = useLogoutMutate()
   const { theme, toggleTheme } = useTheme()
 
-  const handleResetModel = () => {
-    useTTSStore.getState().clear()
-  }
+  // const handleResetModel = () => {
+  //   useTTSStore.getState().clear()
+  // }
 
   return (
     <header className='bg-white dark:bg-background border-b border-border sticky top-0 z-10'>

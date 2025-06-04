@@ -6,10 +6,15 @@ import UpdatePass from './update-pass'
 import Delete from '@/components/models/profile-delete'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import useTTSStore from '@/store/tts'
 
 function Overview() {
   const email = useAuthStore((s) => s.email)
   const [showUpdatePass, setShowUpdatePass] = useState(false)
+
+  const handleResetModel = () => {
+    useTTSStore.getState().clear()
+  }
 
   return (
     <div className='grid gap-6'>
@@ -40,10 +45,7 @@ function Overview() {
               variant='ghost'
               size='sm'
               title='Reset onboarding'
-              onClick={() => {
-                localStorage.removeItem('onboardingComplete')
-                location.reload()
-              }}
+              onClick={handleResetModel}
               className='flex items-center gap-2 text-muted-foreground hover:bg-muted/80 rounded-lg ml-4 transition'>
               <RefreshCw className='w-4 h-4' />
               <span className='text-sm font-medium'>Reset</span>

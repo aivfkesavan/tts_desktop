@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { Loader, AudioLines, Play, Square, Sparkles, Gauge, RotateCcw, Pause, Download } from 'lucide-react'
+import { AudioLines, Play, Square, Sparkles, Gauge, RotateCcw, Pause } from 'lucide-react'
 
 import useTTSStore from '@/store/tts'
 import { voices } from '@/utils/tts-models'
 import { root } from '@/services/end-points'
-import { cn } from '@/lib/utils'
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
@@ -19,8 +18,10 @@ import { useTTSHistory } from '@/store/history-tts'
 
 function MainPanel() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
+  const [generatedText, setGeneratedText] = useState('')
   const [audioDuration, setAudioDuration] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+
   const [audioTime, setAudioTime] = useState(0)
   const [status, setStatus] = useState('idle')
   const [text, setText] = useState('')
@@ -32,6 +33,12 @@ function MainPanel() {
   const update = useTTSStore((s) => s.update)
   const voice = useTTSStore((s) => s.voice)
   const speed = useTTSStore((s) => s.speed)
+
+  const trimmedText = text.trim()
+  const hasChanged = trimmedText !== generatedText
+  const hasAudio = !!audioUrl
+  const canReplay = hasAudio && !hasChanged && status === 'idle'
+  const canPausePlay = hasAudio && !hasChanged && (status === 'playing' || status === 'paused')
 
   useEffect(() => {
     if (!audioUrl) return
@@ -104,6 +111,7 @@ function MainPanel() {
       const objectUrl = URL.createObjectURL(mergedBlob)
 
       setAudioUrl(objectUrl)
+      setGeneratedText(trimmed)
       setStatus('playing')
 
       addToHistory({ text: trimmed, url: objectUrl })
@@ -152,6 +160,13 @@ function MainPanel() {
       setIsPaused(true)
       setStatus('paused')
     }
+  }
+  function handleReplay() {
+    if (!audioRef.current) return
+    audioRef.current.currentTime = 0
+    audioRef.current.play()
+    setIsPaused(false)
+    setStatus('playing')
   }
 
   // console.log('voice', voice)
@@ -240,57 +255,33 @@ function MainPanel() {
         )}
 
         <div className='flex items-center gap-4 mt-6'>
-          {(status === 'playing' || status === 'paused') && (
-            <Button variant='ghost' size='icon' asChild>
-              <a href={audioUrl} download='tts-audio.wav'>
-                <Download className='w-4 h-4' />
-              </a>
-            </Button>
-          )}
-
-          {(status === 'playing' || status === 'paused') && (
-            <Button
-              onClick={togglePlayback}
-              variant='outline'
-              className='px-4 py-2 text-muted-foreground border-muted-foreground hover:text-primary hover:border-primary transition-colors duration-200'>
+          {canPausePlay && (
+            <Button onClick={togglePlayback} variant='outline' className='gap-2'>
               {isPaused ? <Play className='size-4' /> : <Pause className='size-4' />}
-              <span className='text-sm'>{isPaused ? 'Resume' : 'Pause'}</span>
+              <span>{isPaused ? 'Resume' : 'Pause'}</span>
             </Button>
           )}
 
-          <Button
-            onClick={() => {
-              if (status === 'playing' || status === 'paused') {
-                handleStop()
-              } else {
-                getTTS()
-              }
-            }}
-            disabled={status === 'loading' || text.trim() === ''}
-            variant={status === 'playing' || status === 'paused' ? 'destructive' : 'default'}
-            className={cn(
-              'px-6 py-2 font-medium transition-all duration-300 ease-out flex items-center gap-2 rounded-md',
-              status === 'playing' || status === 'paused'
-                ? 'text-white hover:bg-destructive/90'
-                : 'text-black hover:bg-primary/90',
-              'disabled:opacity-50 disabled:cursor-not-allowed'
-            )}>
-            {status === 'loading' ? (
-              <Loader className='size-4 animate-spin' />
-            ) : status === 'playing' || status === 'paused' ? (
+          {canPausePlay && (
+            <Button onClick={handleStop} variant='destructive' className='gap-2'>
               <Square className='size-4 fill-white' />
-            ) : (
-              <Play className='size-4 fill-black' />
-            )}
+              <span>Stop</span>
+            </Button>
+          )}
 
-            <span className='transition-opacity duration-200 opacity-100'>
-              {status === 'loading'
-                ? 'Generating...'
-                : status === 'playing' || status === 'paused'
-                ? 'Stop'
-                : 'Generate'}
-            </span>
-          </Button>
+          {canReplay && (
+            <Button onClick={handleReplay} variant='outline' className='gap-2'>
+              <Play className='size-4' />
+              <span>Play Again</span>
+            </Button>
+          )}
+
+          {(hasChanged || !audioUrl) && trimmedText && (
+            <Button onClick={getTTS} variant='default' className='gap-2 text-black hover:bg-primary/90'>
+              <Play className='size-4 fill-black' />
+              <span>Generate</span>
+            </Button>
+          )}
         </div>
       </div>
 
