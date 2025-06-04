@@ -35,18 +35,18 @@ function Nav() {
                 History
               </Link>
             </Button>
-            <Button
+            {/* <Button
               variant='ghost'
               size='icon'
               onClick={handleResetModel}
               title='Reset model (show onboarding)'
               className='w-8 h-8 rounded-lg text-muted-foreground hover:bg-muted'>
               <RefreshCw className='w-4 h-4' />
-            </Button>
+            </Button> */}
 
             <Button
               size='icon'
-              variant='secondary'
+              variant='outline'
               onClick={toggleTheme}
               className='w-8 h-8 rounded-lg text-muted-foreground hover:bg-muted transition-colors'
               aria-label='Toggle Theme'>
@@ -57,7 +57,6 @@ function Nav() {
               )}
             </Button>
 
-            {/* User dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button

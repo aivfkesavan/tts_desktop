@@ -59,13 +59,13 @@ function MainPanel() {
     setStatus('loading')
 
     const chunks = chunkText(text)
-    console.log(`[TTS] Total Chunks: ${chunks.length}`)
-    console.table(chunks.map((t, i) => ({ Index: i + 1, Text: t.slice(0, 60) + '...' })))
+    // console.log(`[TTS] Total Chunks: ${chunks.length}`)
+    // console.table(chunks.map((t, i) => ({ Index: i + 1, Text: t.slice(0, 60) + '...' })))
 
     try {
       const responses = await Promise.allSettled(
         chunks.map(async (chunk, i) => {
-          console.log(`[TTS] Requesting chunk ${i + 1}`)
+          // console.log(`[TTS] Requesting chunk ${i + 1}`)
 
           const res = await fetch(`${root.localBackendUrl}/tts`, {
             method: 'POST',
@@ -125,7 +125,7 @@ function MainPanel() {
 
       await audio.play()
     } catch (err) {
-      console.error('[TTS] Error:', err)
+      // console.error('[TTS] Error:', err)
       setStatus('idle')
     }
   }
