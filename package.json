@@ -1,8 +1,8 @@
 {
-  "name": "tts",
+  "name": "nidum-audio",
   "private": true,
   "version": "1.0.1",
-  "productName": "TTS",
+  "productName": "nidum-audio",
   "description": "Text To Speech Desktop Application",
   "author": {
     "name": "Nidum",
@@ -14,6 +14,7 @@
     "dev": "vite dev",
     "start": "vite dev",
     "prebuild": "rimraf ./dist ./dist-electron ./release",
+    "preinstall": "npm install --cpu=wasm32 sharp --no-save",
     "build": "tsc && vite build && electron-builder",
     "build-win": "npm run prebuild && tsc && vite build && electron-builder --win --x64",
     "clean": "rm -rf ./node_modules ./dist ./dist-electron ./release ./models"
