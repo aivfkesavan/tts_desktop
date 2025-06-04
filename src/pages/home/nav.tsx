@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom'
-import { Moon, Sun, User, LogOut, RefreshCw, Volume2 } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Moon, Sun, User, LogOut, RefreshCw, Volume2, History } from 'lucide-react'
 
 import { useLogoutMutate } from '@/hooks/use-user'
 import { useTheme } from '@/components/common/theme-provider'
@@ -29,6 +29,12 @@ function Nav() {
           </div>
 
           <div className='flex items-center gap-2 sm:gap-4'>
+            <Button asChild variant='outline' size='sm' className='gap-2'>
+              <Link to='/history'>
+                <History className='w-4 h-4' />
+                History
+              </Link>
+            </Button>
             <Button
               variant='ghost'
               size='icon'

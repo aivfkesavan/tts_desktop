@@ -11,6 +11,7 @@ import Login from './pages/login'
 import Profile from './pages/profile'
 import Home from './pages/home'
 import ModelsPage from './pages/models-list'
+import History from './pages/history/history'
 
 const routes = [
   {
@@ -44,6 +45,10 @@ const routes = [
       {
         path: 'models',
         element: <ModelsPage />,
+      },
+      {
+        path: 'history',
+        element: <History />,
       },
     ],
   },

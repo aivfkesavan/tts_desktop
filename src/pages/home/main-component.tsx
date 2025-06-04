@@ -1,22 +1,6 @@
-import { useState } from 'react'
-import {
-  BookOpenText,
-  Laugh,
-  Mic,
-  Globe,
-  Film,
-  Gamepad2,
-  Podcast,
-  Flower,
-  Loader,
-  AudioLines,
-  Play,
-  Square,
-  Sparkles,
-  Gauge,
-} from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Loader, AudioLines, Play, Square, Sparkles, Gauge, RotateCcw, Pause, Download } from 'lucide-react'
 
-import { useAgentPlayer } from '@/hooks/use-player'
 import useTTSStore from '@/store/tts'
 import { voices } from '@/utils/tts-models'
 import { root } from '@/services/end-points'
@@ -27,89 +11,150 @@ import { Textarea } from '@/components/ui/textarea'
 import { Slider } from '@/components/ui/slider'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-
-const suggestions = [
-  {
-    label: 'Narrate a story',
-    icon: BookOpenText,
-    prompt: `Once upon a time, in a land far, far away, there existed a kingdom where magic flowed through every corner of the realm. The people lived in harmony with nature, until one day, a mysterious shadow crept over the land, threatening the balance of peace. Thus began an epic tale of courage, friendship, and destiny.`,
-  },
-  {
-    label: 'Tell a silly joke',
-    icon: Laugh,
-    prompt: `Why don't scientists trust atoms? Because they make up everything! It's one of those classic one-liners that sneaks up on you. Whether you groan or chuckle, it's hard not to appreciate the cleverness behind the wordplay.`,
-  },
-  {
-    label: 'Record an advertisement',
-    icon: Mic,
-    prompt: `Discover the future of voice technology with VoiceForge — the industry leader in dynamic, AI-driven voice solutions. Whether you're building the next big app or enhancing customer experience, VoiceForge empowers your brand to speak with clarity, personality, and precision. Try VoiceForge today, and give your voice the edge it deserves.`,
-  },
-  {
-    label: 'Speak in different languages',
-    icon: Globe,
-    prompt: `Hello! Bonjour! Hola! Guten Tag! Ciao! The world is full of vibrant cultures and beautiful languages. Embrace the diversity and connect with people across continents. Language is not just communication — it’s a bridge to understanding and empathy.`,
-  },
-  {
-    label: 'Direct a dramatic movie scene',
-    icon: Film,
-    prompt: `The tension in the room was palpable. Each tick of the clock echoed like a drumbeat. She slowly reached for the doorknob, her hand trembling. Outside, the storm raged on, but inside, the true tempest was just beginning. Every eye watched, every breath held — something was about to change forever.`,
-  },
-  {
-    label: 'Hear from a video game character',
-    icon: Gamepad2,
-    prompt: `Greetings, adventurer! You've entered the mystical realm of Elyndor, where legends are forged in battle and every decision shapes the fate of kingdoms. Equip your sword, ready your spellbook, and brace yourself — destiny awaits beyond the next horizon.`,
-  },
-  {
-    label: 'Introduce your podcast',
-    icon: Podcast,
-    prompt: `Welcome to another episode of *The Insight Loop* — the podcast where innovation meets inspiration. Each week, we bring you thought leaders, creators, and disruptors who are shaping the future of their industries. So grab your coffee, sit back, and let’s dive deep into the stories behind the success.`,
-  },
-  {
-    label: 'Guide a meditation class',
-    icon: Flower,
-    prompt: `Take a deep breath in... and slowly exhale. Let your shoulders drop and your thoughts settle. As you focus on your breath, feel your body begin to relax. In this moment, there's nothing to do, nowhere to be — just presence, calm, and clarity.`,
-  },
-];
+import { chunkText } from '@/utils/text-chunker'
+import AudioVisualizer from './audio-visualizer'
+import { suggestions } from '@/utils/tts-suggestions'
+import { mergeWavBlobs } from '@/utils/merge-wav'
+import { useTTSHistory } from '@/store/history-tts'
 
 function MainPanel() {
+  const [audioUrl, setAudioUrl] = useState<string | null>(null)
+  const [audioDuration, setAudioDuration] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+  const [audioTime, setAudioTime] = useState(0)
   const [status, setStatus] = useState('idle')
   const [text, setText] = useState('')
+
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+
+  const { add: addToHistory } = useTTSHistory()
 
   const update = useTTSStore((s) => s.update)
   const voice = useTTSStore((s) => s.voice)
   const speed = useTTSStore((s) => s.speed)
 
-  const { play, stop } = useAgentPlayer()
+  useEffect(() => {
+    if (!audioUrl) return
+
+    const timeout = setTimeout(() => {
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current = null
+      }
+      URL.revokeObjectURL(audioUrl)
+      setAudioUrl(null)
+      setAudioTime(0)
+      setAudioDuration(0)
+      setStatus('idle')
+      setIsPaused(false)
+    }, 100)
+
+    return () => clearTimeout(timeout)
+  }, [text])
 
   async function getTTS(): Promise<void> {
+    const trimmed = text.trim()
+    if (!trimmed) return
+
+    setStatus('loading')
+
+    const chunks = chunkText(text)
+    console.log(`[TTS] Total Chunks: ${chunks.length}`)
+    console.table(chunks.map((t, i) => ({ Index: i + 1, Text: t.slice(0, 60) + '...' })))
+
     try {
-      if (text.trim() === '') return
+      const responses = await Promise.allSettled(
+        chunks.map(async (chunk, i) => {
+          console.log(`[TTS] Requesting chunk ${i + 1}`)
 
-      setStatus('loading')
-      const response = await fetch(`${root.localBackendUrl}/tts`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, voice, speed }),
-      })
+          const res = await fetch(`${root.localBackendUrl}/tts`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: chunk, voice, speed }),
+          })
 
-      if (!response.ok) return
+          if (!res.ok) {
+            const errorText = await res.text()
+            throw new Error(`[TTS] POST failed: ${errorText}`)
+          }
 
-      const data = await response.json()
+          const { fileName } = await res.json()
+          const audioRes = await fetch(`${root.localBackendUrl}/tts/${fileName}`)
+
+          if (!audioRes.ok || !audioRes.headers.get('Content-Type')?.includes('audio')) {
+            const fallback = await audioRes.text()
+            throw new Error(`[TTS] Invalid audio response: ${fallback}`)
+          }
+
+          const blob = await audioRes.blob()
+          return { blob, type: audioRes.headers.get('Content-Type') || 'audio/wav' }
+        })
+      )
+
+      const validBlobs = responses
+        .filter((res): res is PromiseFulfilledResult<{ blob: Blob; type: string }> => res.status === 'fulfilled')
+        .map((res) => res.value)
+
+      if (validBlobs.length === 0) {
+        throw new Error('[TTS] No valid audio data received.')
+      }
+
+      const blobs = validBlobs.map(({ blob }) => blob)
+      const mergedBlob = await mergeWavBlobs(blobs) // Custom merging logic with logs
+      const objectUrl = URL.createObjectURL(mergedBlob)
+
+      setAudioUrl(objectUrl)
       setStatus('playing')
-      play(`${root.localBackendUrl}/tts/${data?.fileName}`, () => {
+
+      addToHistory({ text: trimmed, url: objectUrl })
+
+      const audio = new Audio(objectUrl)
+      audioRef.current = audio
+      audio.crossOrigin = 'anonymous'
+
+      audio.ontimeupdate = () => {
+        setAudioTime(audio.currentTime)
+        setAudioDuration(audio.duration)
+      }
+
+      audio.onended = () => {
         setStatus('idle')
-      })
+        setAudioTime(0)
+        setIsPaused(false)
+      }
+
+      await audio.play()
     } catch (err) {
+      console.error('[TTS] Error:', err)
       setStatus('idle')
     }
   }
 
-  function onStop() {
-    stop()
-    setStatus('idle')
+  function handleStop() {
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
+      setAudioTime(0)
+      setAudioDuration(0)
+      setStatus('idle')
+      setIsPaused(false)
+    }
   }
 
-  console.log('voice', voice)
+  function togglePlayback() {
+    if (!audioRef.current) return
+    if (isPaused) {
+      audioRef.current.play()
+      setIsPaused(false)
+      setStatus('playing')
+    } else {
+      audioRef.current.pause()
+      setIsPaused(true)
+      setStatus('paused')
+    }
+  }
+
+  // console.log('voice', voice)
 
   return (
     <div className='h-full flex-1 max-w-7xl mx-auto grid grid-rows-[auto_1fr_auto] bg-background'>
@@ -161,73 +206,93 @@ function MainPanel() {
         />
       </div>
 
-      {status !== 'playing' && !!text && (
-        <div className='px-6 pb-4 flex justify-between gap-4 items-end'>
-          <div className='w-56 mt-6 ml-4'>
-            <Label className='mb-2 text-sm flex items-center gap-2 text-foreground'>
+      <div className='px-6 pb-4 flex flex-wrap items-end justify-between gap-6 mt-4'>
+        <div className='w-56'>
+          <Label className='mb-2 text-sm flex items-center justify-between text-foreground'>
+            <span className='flex items-center gap-2'>
               <Gauge className='w-4 h-4 text-muted-foreground' />
               Speed
-            </Label>
-            <Slider
-              value={[speed]}
-              min={0}
-              max={1.5}
-              step={0.1}
-              onValueChange={([val]) => update({ speed: val })}
-              className='h-2 [&_[data-slot=slider-track]]:bg-muted [&_[data-slot=slider-range]]:bg-primary [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-thumb]]:border [&_[data-slot=slider-thumb]]:border-primary'
+            </span>
+            <RotateCcw
+              className='w-4 h-4 cursor-pointer text-muted-foreground hover:text-primary transition-colors'
+              onClick={() => update({ speed: 1 })}
             />
-            <div className='flex justify-between text-xs text-muted-foreground mt-1'>
-              <span>Slower</span>
-              <span>Faster</span>
-            </div>
+          </Label>
+
+          <Slider
+            value={[speed]}
+            min={0.1}
+            max={1.5}
+            step={0.1}
+            onValueChange={([val]) => update({ speed: val })}
+            className='h-2 [&_[data-slot=slider-track]]:bg-muted [&_[data-slot=slider-range]]:bg-primary [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-thumb]]:border [&_[data-slot=slider-thumb]]:border-primary'
+          />
+
+          <div className='flex justify-between text-xs text-muted-foreground mt-1'>
+            <span>Slower</span>
+            <span>Faster</span>
           </div>
+        </div>
+        {audioUrl && (
+          <div className='flex-1 min-w-[200px] max-w-[600px] flex items-center justify-between '>
+            <AudioVisualizer currentTime={audioTime} duration={audioDuration} audioRef={audioRef} />
+          </div>
+        )}
+
+        <div className='flex items-center gap-4 mt-6'>
+          {(status === 'playing' || status === 'paused') && (
+            <Button variant='ghost' size='icon' asChild>
+              <a href={audioUrl} download='tts-audio.wav'>
+                <Download className='w-4 h-4' />
+              </a>
+            </Button>
+          )}
+
+          {(status === 'playing' || status === 'paused') && (
+            <Button
+              onClick={togglePlayback}
+              variant='outline'
+              className='px-4 py-2 text-muted-foreground border-muted-foreground hover:text-primary hover:border-primary transition-colors duration-200'>
+              {isPaused ? <Play className='size-4' /> : <Pause className='size-4' />}
+              <span className='text-sm'>{isPaused ? 'Resume' : 'Pause'}</span>
+            </Button>
+          )}
 
           <Button
-            onClick={getTTS}
-            disabled={status === 'loading'}
+            onClick={() => {
+              if (status === 'playing' || status === 'paused') {
+                handleStop()
+              } else {
+                getTTS()
+              }
+            }}
+            disabled={status === 'loading' || text.trim() === ''}
+            variant={status === 'playing' || status === 'paused' ? 'destructive' : 'default'}
             className={cn(
-              'w-auto mt-4 px-6 py-2 text-black font-medium transition-all duration-300 ease-out flex items-center gap-2 rounded-md',
-              'hover:shadow-lg hover:scale-[1.03] hover:bg-primary/90 active:scale-[0.98]',
+              'px-6 py-2 font-medium transition-all duration-300 ease-out flex items-center gap-2 rounded-md',
+              status === 'playing' || status === 'paused'
+                ? 'text-white hover:bg-destructive/90'
+                : 'text-black hover:bg-primary/90',
               'disabled:opacity-50 disabled:cursor-not-allowed'
             )}>
             {status === 'loading' ? (
-              <>
-                <span className='relative flex items-center justify-center'>
-                  <span className='absolute inline-flex h-5 w-5 animate-ping rounded-full bg-black opacity-40' />
-                  <Loader className='size-4 z-10 animate-spin fill-black' />
-                </span>
-                <span key='generating' className='fade-scale transition-all duration-300'>
-                  Generating...
-                </span>
-              </>
+              <Loader className='size-4 animate-spin' />
+            ) : status === 'playing' || status === 'paused' ? (
+              <Square className='size-4 fill-white' />
             ) : (
-              <>
-                <Play className='size-4 fill-black' />
-                <span key='generate' className='fade-scale transition-all duration-300'>
-                  Generate
-                </span>
-              </>
+              <Play className='size-4 fill-black' />
             )}
-          </Button>
-        </div>
-      )}
 
-      {status === 'playing' && (
-        <div className='px-6 pb-4 flex justify-end'>
-          <Button
-            onClick={onStop}
-            variant='destructive'
-            className={cn(
-              'w-auto mt-4 px-6 py-2 text-white font-medium transition-all duration-300 ease-out flex items-center gap-2 rounded-md',
-              'hover:shadow-lg hover:scale-[1.03] hover:bg-destructive/90 active:scale-[0.98]'
-            )}>
-            <Square className='size-4 fill-white animate-spin-slow' />
-            <span key='stop' className='fade-scale transition-all duration-300'>
-              Stop
+            <span className='transition-opacity duration-200 opacity-100'>
+              {status === 'loading'
+                ? 'Generating...'
+                : status === 'playing' || status === 'paused'
+                ? 'Stop'
+                : 'Generate'}
             </span>
           </Button>
         </div>
-      )}
+      </div>
 
       <div className='px-6 py-8 pb-12 bg-background'>
         <p className='text-sm text-muted-foreground mb-4'>Get started with</p>

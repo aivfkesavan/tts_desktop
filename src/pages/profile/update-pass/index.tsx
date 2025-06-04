@@ -55,8 +55,7 @@ function UpdatePass({ updateShowPass }: Props) {
   const errorClasses = 'mt-1 text-sm text-destructive'
 
   return (
-    <div className='min-h-[1px]'>
-      {/* Current Password */}
+    <div className='min-h-[1px] '>
       <div className='mb-5'>
         <label className={labelClasses}>Current Password</label>
         <div className='relative'>
@@ -84,7 +83,6 @@ function UpdatePass({ updateShowPass }: Props) {
         {errors.oldPassword && <p className={errorClasses}>{errors.oldPassword.message}</p>}
       </div>
 
-      {/* New Password */}
       <div className='mb-5'>
         <label className={labelClasses}>New Password</label>
         <div className='relative'>
@@ -112,7 +110,6 @@ function UpdatePass({ updateShowPass }: Props) {
         {errors.newPassword && <p className={errorClasses}>{errors.newPassword.message}</p>}
       </div>
 
-      {/* Confirm Password */}
       <div className='mb-6'>
         <label className={labelClasses}>Confirm Password</label>
         <div className='relative'>
