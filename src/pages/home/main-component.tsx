@@ -125,7 +125,7 @@ function MainPanel() {
 
       setAudioMeta({ url: objectUrl, text: trimmed, voice, speed })
       setAudioUrl(objectUrl)
-      addToHistory({ text: trimmed, url: objectUrl })
+      addToHistory({ text: trimmed, url: objectUrl, voice })
       play()
     } catch {
       setStatus('idle')
@@ -138,7 +138,7 @@ function MainPanel() {
     <div className='h-full flex-1 max-w-7xl mx-auto grid grid-rows-[auto_1fr_auto] bg-background'>
       <TTSHeader voice={voice} update={update} />
 
-      <div className='overflow-auto px-6'>
+      <div className='overflow-y-auto max-h-[500px] px-6'>
         <Textarea
           value={text}
           onChange={(e) => setText(e.target.value)}

@@ -29,15 +29,21 @@ const History = () => {
         </p>
       </div>
 
-      <div className='max-w-5xl mx-auto space-y-4'>
+      <div className='mx-auto grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3'>
         {items.length === 0 ? (
-          <Card className='w-full p-8 rounded-3xl border text-center vm-card'>
-            <p className='text-muted-foreground text-lg'>
-              You haven&apos;t generated any speech yet. Start your first TTS conversion to see it here.
-            </p>
-          </Card>
+          <div className='col-span-full text-center py-12 text-muted-foreground text-lg border rounded-xl'>
+            You haven&apos;t generated any speech yet. Start your first TTS conversion to see it here.
+          </div>
         ) : (
-          items.map((item) => <AudioHistoryCard key={item.id} text={item.text} url={item.url} />)
+          items.map((item) => (
+            <AudioHistoryCard
+              key={item.id}
+              text={item.text}
+              url={item.url}
+              voice={item.voice}
+              createdAt={item.createdAt}
+            />
+          ))
         )}
       </div>
     </div>

@@ -8,10 +8,12 @@ import ResetPass from './pages/reset-pass'
 import Signup from './pages/signup'
 import Login from './pages/login'
 
+import InitialSetup from './components/models/initial-setup'
+import History from './pages/history/history'
+import ModelsPage from './pages/models-list'
+import useTTSStore from './store/tts'
 import Profile from './pages/profile'
 import Home from './pages/home'
-import ModelsPage from './pages/models-list'
-import History from './pages/history/history'
 
 const routes = [
   {
@@ -56,11 +58,14 @@ const routes = [
 
 function App() {
   const routeList = useRoutes(routes)
+  const isDownloaded = useTTSStore((s) => s.isDownloaded)
 
   return (
     <>
       {routeList}
       <DownloadProgressCard />
+
+      {!isDownloaded && <InitialSetup />}
     </>
   )
 }

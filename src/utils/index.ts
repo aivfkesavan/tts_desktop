@@ -115,3 +115,29 @@ export function getVoiceDetails(name: string) {
         isPremium: false,
       }
 }
+
+export function formatRelativeTime(timestamp: number): string {
+  const now = Date.now()
+  const diffInSeconds = Math.floor((now - timestamp) / 1000)
+
+  const units: [Intl.RelativeTimeFormatUnit, number][] = [
+    ['year', 60 * 60 * 24 * 365],
+    ['month', 60 * 60 * 24 * 30],
+    ['week', 60 * 60 * 24 * 7],
+    ['day', 60 * 60 * 24],
+    ['hour', 60 * 60],
+    ['minute', 60],
+    ['second', 1],
+  ]
+
+  const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' })
+
+  for (const [unit, secondsInUnit] of units) {
+    const value = Math.floor(diffInSeconds / secondsInUnit)
+    if (Math.abs(value) >= 1) {
+      return rtf.format(-value, unit)
+    }
+  }
+
+  return 'just now'
+}

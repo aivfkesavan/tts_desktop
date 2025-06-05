@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import React from 'react'
 import AudioVisualizer from './audio-visualizer'
 import { Button } from '@/components/ui/button'
+import FullScreenLoader from './full-screen-loader'
 
 type AudioControlPanelProps = {
   speed: number
@@ -54,87 +55,90 @@ export const AudioControlPanel: React.FC<AudioControlPanelProps> = ({
   className,
 }) => {
   return (
-    <div className={cn('px-6 pb-4 flex flex-wrap items-end justify-between gap-6 mt-4', className)}>
-      <div className='w-56'>
-        <Label className='mb-2 text-sm flex items-center justify-between text-foreground'>
-          <span className='flex items-center gap-2'>
-            <Gauge className='w-4 h-4 text-muted-foreground' />
-            Speed
-          </span>
-          <RotateCcw
-            className='w-4 h-4 cursor-pointer text-muted-foreground hover:text-primary transition-colors'
-            onClick={() => update({ speed: 1 })}
+    <>
+      {status === 'loading' && <FullScreenLoader />}
+      <div className={cn('px-6 pb-4 flex flex-wrap items-end justify-between gap-6 mt-4', className)}>
+        <div className='w-56'>
+          <Label className='mb-2 text-sm flex items-center justify-between text-foreground'>
+            <span className='flex items-center gap-2'>
+              <Gauge className='w-4 h-4 text-muted-foreground' />
+              Speed
+            </span>
+            <RotateCcw
+              className='w-4 h-4 cursor-pointer text-muted-foreground hover:text-primary transition-colors'
+              onClick={() => update({ speed: 1 })}
+            />
+          </Label>
+
+          <Slider
+            value={[speed]}
+            min={0.1}
+            max={1.5}
+            step={0.1}
+            onValueChange={([val]) => update({ speed: val })}
+            className='h-2 [&_[data-slot=slider-track]]:bg-muted [&_[data-slot=slider-range]]:bg-primary [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-thumb]]:border [&_[data-slot=slider-thumb]]:border-primary'
           />
-        </Label>
-
-        <Slider
-          value={[speed]}
-          min={0.1}
-          max={1.5}
-          step={0.1}
-          onValueChange={([val]) => update({ speed: val })}
-          className='h-2 [&_[data-slot=slider-track]]:bg-muted [&_[data-slot=slider-range]]:bg-primary [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-thumb]]:border [&_[data-slot=slider-thumb]]:border-primary'
-        />
-      </div>
-
-      {audioMeta?.url && !hasChanged && (
-        <div className='flex-1 min-w-[200px] max-w-[600px] flex items-center justify-between'>
-          <AudioVisualizer currentTime={currentTime} duration={duration} audioRef={audioRef} />
         </div>
-      )}
 
-      <div className='flex items-center justify-end gap-4 mt-6 w-[280px] min-w-[280px] animate-fade-in'>
-        {canPausePlay && (
-          <Button onClick={isPaused ? play : pause} variant='secondary' className='gap-2'>
-            <div className='transition-transform duration-300 hover:rotate-3 hover:scale-110'>
-              {isPaused ? (
+        {audioMeta?.url && !hasChanged && (
+          <div className='flex-1 min-w-[200px] max-w-[600px] flex items-center justify-between'>
+            <AudioVisualizer currentTime={currentTime} duration={duration} audioRef={audioRef} />
+          </div>
+        )}
+
+        <div className='flex items-center justify-end gap-4 mt-6 w-[280px] min-w-[280px] animate-fade-in'>
+          {canPausePlay && (
+            <Button onClick={isPaused ? play : pause} variant='secondary' className='gap-2'>
+              <div className='transition-transform duration-300 hover:rotate-3 hover:scale-110'>
+                {isPaused ? (
+                  <Play className='size-4 fill-black dark:fill-white' />
+                ) : (
+                  <Pause className='size-4 fill-black dark:fill-white' />
+                )}
+              </div>
+              <span>{isPaused ? 'Resume' : 'Pause'}</span>
+            </Button>
+          )}
+
+          {canPausePlay && (
+            <Button onClick={stop} variant='destructive' className='gap-2'>
+              <div className='transition-transform duration-300 hover:rotate-3 hover:scale-110'>
+                <Square className='size-4 fill-white' />
+              </div>
+              <span>Stop</span>
+            </Button>
+          )}
+
+          {canReplay && (
+            <Button onClick={replay} variant='secondary' className='gap-2'>
+              <div className='transition-transform duration-300 hover:rotate-3 hover:scale-110'>
                 <Play className='size-4 fill-black dark:fill-white' />
+              </div>
+              <span>Play Again</span>
+            </Button>
+          )}
+
+          {hasChanged && trimmedText && (
+            <Button
+              onClick={getTTS}
+              variant='default'
+              disabled={status === 'loading'}
+              className='gap-2 text-black hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-all'>
+              {status === 'loading' ? (
+                <>
+                  <Loader className='h-4 w-4 animate-spin' />
+                  <span>Generating...</span>
+                </>
               ) : (
-                <Pause className='size-4 fill-black dark:fill-white' />
+                <>
+                  <Play className='size-4 fill-black transition-transform duration-300 hover:scale-110' />
+                  <span>Generate</span>
+                </>
               )}
-            </div>
-            <span>{isPaused ? 'Resume' : 'Pause'}</span>
-          </Button>
-        )}
-
-        {canPausePlay && (
-          <Button onClick={stop} variant='destructive' className='gap-2'>
-            <div className='transition-transform duration-300 hover:rotate-3 hover:scale-110'>
-              <Square className='size-4 fill-white' />
-            </div>
-            <span>Stop</span>
-          </Button>
-        )}
-
-        {canReplay && (
-          <Button onClick={replay} variant='secondary' className='gap-2'>
-            <div className='transition-transform duration-300 hover:rotate-3 hover:scale-110'>
-              <Play className='size-4 fill-black dark:fill-white' />
-            </div>
-            <span>Play Again</span>
-          </Button>
-        )}
-
-        {hasChanged && trimmedText && (
-          <Button
-            onClick={getTTS}
-            variant='default'
-            disabled={status === 'loading'}
-            className='gap-2 text-black dark:text-white hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-all'>
-            {status === 'loading' ? (
-              <>
-                <Loader className='h-4 w-4 animate-spin' />
-                <span>Generating...</span>
-              </>
-            ) : (
-              <>
-                <Play className='size-4 fill-black dark:fill-white transition-transform duration-300 hover:scale-110' />
-                <span>Generate</span>
-              </>
-            )}
-          </Button>
-        )}
+            </Button>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }

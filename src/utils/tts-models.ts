@@ -1,7 +1,7 @@
 export const voices = [
   {
     name: 'af_heart',
-    title: 'heart',
+    title: 'Sienna',
     quality: 'A',
     overallGrade: 'A',
     description: 'Warm and emotive—ideal for heartfelt storytelling and empathetic brand messaging.',
@@ -10,7 +10,7 @@ export const voices = [
   },
   {
     name: 'af_alloy',
-    title: 'alloy',
+    title: 'Talia',
     quality: 'B',
     overallGrade: 'C',
     description: 'Solid and dependable timbre, perfect for technical explainers with a friendly twist.',
@@ -19,7 +19,7 @@ export const voices = [
   },
   {
     name: 'af_aoede',
-    title: 'aoede',
+    title: 'Aubrey',
     quality: 'B',
     overallGrade: 'C+',
     description: 'Smooth and melodic tones that elevate lifestyle content and podcast intros.',
@@ -28,7 +28,7 @@ export const voices = [
   },
   {
     name: 'af_bella',
-    title: 'bella',
+    title: 'Bella',
     quality: 'A',
     overallGrade: 'A-',
     description: 'Vibrant and energetic delivery—engineered for high-impact promotional spots.',
@@ -37,7 +37,7 @@ export const voices = [
   },
   {
     name: 'af_jessica',
-    title: 'jessica',
+    title: 'Jessica',
     quality: 'C',
     overallGrade: 'D',
     description: 'Conversational and down-to-earth, well-suited for internal training clips.',
@@ -46,7 +46,7 @@ export const voices = [
   },
   {
     name: 'af_kore',
-    title: 'kore',
+    title: 'Kora',
     quality: 'B',
     overallGrade: 'C+',
     description: 'Clear mid-range presence, optimised for product how-to videos.',
@@ -55,7 +55,7 @@ export const voices = [
   },
   {
     name: 'af_nicole',
-    title: 'nicole',
+    title: 'Nicole',
     quality: 'B',
     overallGrade: 'B-',
     description: 'Relaxed yet precise articulation, great for customer-service IVR flows.',
@@ -64,7 +64,7 @@ export const voices = [
   },
   {
     name: 'af_nova',
-    title: 'nova',
+    title: 'Nova',
     quality: 'B',
     overallGrade: 'C',
     description: 'Forward-leaning, youthful vibe that resonates with modern audiences.',
@@ -73,7 +73,7 @@ export const voices = [
   },
   {
     name: 'af_river',
-    title: 'river',
+    title: 'River',
     quality: 'C',
     overallGrade: 'D',
     description: 'Laid-back and informal cadence, perfect for casual social content.',
@@ -82,7 +82,7 @@ export const voices = [
   },
   {
     name: 'af_sarah',
-    title: 'sarah',
+    title: 'Sarah',
     quality: 'B',
     overallGrade: 'C+',
     description: 'Measured and articulate—ideal for compliance or policy narration.',
@@ -91,7 +91,7 @@ export const voices = [
   },
   {
     name: 'af_sky',
-    title: 'sky',
+    title: 'Skylar',
     quality: 'B',
     overallGrade: 'C-',
     description: 'Airy and optimistic tone that lifts lifestyle vignettes.',
@@ -100,7 +100,7 @@ export const voices = [
   },
   {
     name: 'am_adam',
-    title: 'adam',
+    title: 'Adam',
     quality: 'D',
     overallGrade: 'F+',
     description: 'Rugged and authentic—useful for niche, character-driven reads.',
@@ -109,7 +109,7 @@ export const voices = [
   },
   {
     name: 'am_echo',
-    title: 'echo',
+    title: 'Eli',
     quality: 'C',
     overallGrade: 'D',
     description: 'Neutral and consistent voice, suitable for general narration at scale.',
@@ -118,7 +118,7 @@ export const voices = [
   },
   {
     name: 'am_eric',
-    title: 'eric',
+    title: 'Eric',
     quality: 'C',
     overallGrade: 'D',
     description: 'Steady baritone providing reliability for budget-conscious projects.',
@@ -127,7 +127,7 @@ export const voices = [
   },
   {
     name: 'am_fenrir',
-    title: 'fenrir',
+    title: 'Felix',
     quality: 'B',
     overallGrade: 'C+',
     description: 'Confident and bold resonance—ideal for gaming trailers and ads.',
@@ -136,7 +136,7 @@ export const voices = [
   },
   {
     name: 'am_liam',
-    title: 'liam',
+    title: 'Liam',
     quality: 'C',
     overallGrade: 'D',
     description: 'Approachable and easy-going nature tailored for community outreach.',
@@ -145,7 +145,7 @@ export const voices = [
   },
   {
     name: 'am_onyx',
-    title: 'onyx',
+    title: 'Onyx',
     quality: 'C',
     overallGrade: 'D',
     description: 'Deep and steady tone that brings gravitas to documentary pieces.',
@@ -154,7 +154,7 @@ export const voices = [
   },
   {
     name: 'am_puck',
-    title: 'puck',
+    title: 'Puck',
     quality: 'B',
     overallGrade: 'C+',
     description: 'Playful pace with crisp diction—great for explainer animations.',
@@ -163,7 +163,7 @@ export const voices = [
   },
   {
     name: 'am_santa',
-    title: 'santa',
+    title: 'Nicholas',
     quality: 'C',
     overallGrade: 'D-',
     description: 'Warm, jovial resonance that shines in festive campaigns.',
@@ -172,7 +172,7 @@ export const voices = [
   },
   {
     name: 'bf_alice',
-    title: 'alice',
+    title: 'Alice',
     quality: 'C',
     overallGrade: 'D',
     description: 'Soft and reassuring RP accent—perfect for wellness content.',
@@ -181,7 +181,7 @@ export const voices = [
   },
   {
     name: 'bf_emma',
-    title: 'emma',
+    title: 'Emma',
     quality: 'B',
     overallGrade: 'B-',
     description: 'Elegant and engaging delivery that uplifts premium brand stories.',
@@ -190,7 +190,7 @@ export const voices = [
   },
   {
     name: 'bf_isabella',
-    title: 'isabella',
+    title: 'Isabella',
     quality: 'B',
     overallGrade: 'C',
     description: 'Bright and friendly articulation suited for e-commerce walkthroughs.',
@@ -199,7 +199,7 @@ export const voices = [
   },
   {
     name: 'bf_lily',
-    title: 'lily',
+    title: 'Lily',
     quality: 'C',
     overallGrade: 'D',
     description: 'Gentle cadence fostering trust in educational modules.',
@@ -208,7 +208,7 @@ export const voices = [
   },
   {
     name: 'bm_daniel',
-    title: 'daniel',
+    title: 'Daniel',
     quality: 'C',
     overallGrade: 'D',
     description: 'Straightforward and pragmatic—ideal for factual news bulletins.',
@@ -217,7 +217,7 @@ export const voices = [
   },
   {
     name: 'bm_fable',
-    title: 'fable',
+    title: 'Fable',
     quality: 'B',
     overallGrade: 'C',
     description: 'Story-centric intonation that brings narratives to life.',
@@ -226,7 +226,7 @@ export const voices = [
   },
   {
     name: 'bm_george',
-    title: 'george',
+    title: 'George',
     quality: 'B',
     overallGrade: 'C',
     description: 'Crisp RP delivery lending authority to corporate presentations.',
@@ -235,7 +235,7 @@ export const voices = [
   },
   {
     name: 'bm_lewis',
-    title: 'lewis',
+    title: 'Lewis',
     quality: 'C',
     overallGrade: 'D+',
     description: 'Cool and collected tone, excellent for support chat-bot personas.',
