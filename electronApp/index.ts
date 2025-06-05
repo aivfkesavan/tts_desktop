@@ -64,7 +64,7 @@ function createWindow() {
   if (VITE_DEV_SERVER_URL) void win.loadURL(VITE_DEV_SERVER_URL)
   else void win.loadFile(path.join(RENDERER_DIST, 'index.html'))
 
-  autoUpdateManager(win)
+  // autoUpdateManager(win)
   getSystemInfo()
 
   win.on('close', () => {
