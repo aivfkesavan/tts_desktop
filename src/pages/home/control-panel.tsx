@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 
 import React from 'react'
 import AudioVisualizer from './audio-visualizer'
+import { Button } from '@/components/ui/button'
 
 type AudioControlPanelProps = {
   speed: number
@@ -76,7 +77,7 @@ export const AudioControlPanel: React.FC<AudioControlPanelProps> = ({
         />
       </div>
 
-      {audioMeta?.url && (
+      {audioMeta?.url && !hasChanged && (
         <div className='flex-1 min-w-[200px] max-w-[600px] flex items-center justify-between'>
           <AudioVisualizer currentTime={currentTime} duration={duration} audioRef={audioRef} />
         </div>
@@ -84,55 +85,54 @@ export const AudioControlPanel: React.FC<AudioControlPanelProps> = ({
 
       <div className='flex items-center justify-end gap-4 mt-6 w-[280px] min-w-[280px] animate-fade-in'>
         {canPausePlay && (
-          <button
-            onClick={isPaused ? play : pause}
-            className='gap-2 flex items-center px-4 py-2 rounded-md bg-secondary text-white hover:scale-105 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg'>
-            <div className='transform transition-transform duration-300 hover:rotate-3 hover:scale-110'>
-              {isPaused ? <Play className='size-4 fill-white' /> : <Pause className='size-4 fill-white' />}
+          <Button onClick={isPaused ? play : pause} variant='secondary' className='gap-2'>
+            <div className='transition-transform duration-300 hover:rotate-3 hover:scale-110'>
+              {isPaused ? (
+                <Play className='size-4 fill-black dark:fill-white' />
+              ) : (
+                <Pause className='size-4 fill-black dark:fill-white' />
+              )}
             </div>
-            <span className='text-sm font-medium'>{isPaused ? 'Resume' : 'Pause'}</span>
-          </button>
+            <span>{isPaused ? 'Resume' : 'Pause'}</span>
+          </Button>
         )}
 
         {canPausePlay && (
-          <button
-            onClick={stop}
-            className='gap-2 flex items-center px-4 py-2 rounded-md bg-destructive text-white hover:scale-105 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg'>
-            <div className='transform transition-transform duration-300 hover:rotate-3 hover:scale-110'>
+          <Button onClick={stop} variant='destructive' className='gap-2'>
+            <div className='transition-transform duration-300 hover:rotate-3 hover:scale-110'>
               <Square className='size-4 fill-white' />
             </div>
-            <span className='text-sm font-medium'>Stop</span>
-          </button>
+            <span>Stop</span>
+          </Button>
         )}
 
         {canReplay && (
-          <button
-            onClick={replay}
-            className='gap-2 flex items-center px-4 py-2 rounded-md bg-secondary text-white hover:scale-105 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg'>
-            <div className='transform transition-transform duration-300 hover:rotate-3 hover:scale-110'>
-              <Play className='size-4 fill-white' />
+          <Button onClick={replay} variant='secondary' className='gap-2'>
+            <div className='transition-transform duration-300 hover:rotate-3 hover:scale-110'>
+              <Play className='size-4 fill-black dark:fill-white' />
             </div>
-            <span className='text-sm font-medium'>Play Again</span>
-          </button>
+            <span>Play Again</span>
+          </Button>
         )}
 
         {hasChanged && trimmedText && (
-          <button
+          <Button
             onClick={getTTS}
+            variant='default'
             disabled={status === 'loading'}
-            className='gap-2 flex items-center px-4 py-2 rounded-md bg-primary text-black hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 shadow-md hover:shadow-lg'>
+            className='gap-2 text-black dark:text-white hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-all'>
             {status === 'loading' ? (
               <>
                 <Loader className='h-4 w-4 animate-spin' />
-                <span className='text-sm font-medium'>Generating...</span>
+                <span>Generating...</span>
               </>
             ) : (
               <>
-                <Play className='size-4 fill-black transition-transform duration-300 hover:scale-110' />
-                <span className='text-sm font-medium'>Generate</span>
+                <Play className='size-4 fill-black dark:fill-white transition-transform duration-300 hover:scale-110' />
+                <span>Generate</span>
               </>
             )}
-          </button>
+          </Button>
         )}
       </div>
     </div>

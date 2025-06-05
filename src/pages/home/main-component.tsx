@@ -57,6 +57,32 @@ function MainPanel() {
     return () => clearTimeout(timeout)
   }, [text])
 
+  useEffect(() => {
+    if (!audioMeta) return
+
+    const isVoiceChanged = audioMeta.voice !== voice
+    const isSpeedChanged = audioMeta.speed !== speed
+    const isTextChanged = audioMeta.text !== trimmedText
+
+    if ((isVoiceChanged || isSpeedChanged || isTextChanged) && playerStatus === 'playing') {
+      pause()
+    }
+  }, [voice, speed, trimmedText, audioMeta, playerStatus, pause])
+
+  useEffect(() => {
+    if (!audioMeta?.url || !hasChanged) return
+
+    pause()
+
+    if (audioRef.current) {
+      audioRef.current.src = ''
+    }
+
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = null
+    }
+  }, [hasChanged, audioMeta?.url, pause, audioRef])
+
   async function getTTS() {
     const trimmed = text.trim()
     if (!trimmed) return
