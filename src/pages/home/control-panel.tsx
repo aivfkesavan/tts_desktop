@@ -1,6 +1,6 @@
 'use client'
 
-import { Play, Pause, Square, Loader, RotateCcw, Gauge } from 'lucide-react'
+import { Play, Pause, Square, Loader, RotateCcw, Gauge, Download } from 'lucide-react'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 
@@ -87,6 +87,13 @@ export const AudioControlPanel: React.FC<AudioControlPanelProps> = ({
         )}
 
         <div className='flex items-center justify-end gap-4 mt-6 w-[280px] min-w-[280px] animate-fade-in'>
+          {audioMeta?.url && !hasChanged && (
+            <Button asChild variant='secondary' size='icon' className='text-foreground hover:text-primary transition'>
+              <a href={audioMeta.url} download={`tts-${Date.now()}.wav`}>
+                <Download className='w-4 h-4' />
+              </a>
+            </Button>
+          )}
           {canPausePlay && (
             <Button onClick={isPaused ? play : pause} variant='secondary' className='gap-2'>
               <div className='transition-transform duration-300 hover:rotate-3 hover:scale-110'>

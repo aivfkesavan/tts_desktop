@@ -14,6 +14,7 @@ import ModelsPage from './pages/models-list'
 import useTTSStore from './store/tts'
 import Profile from './pages/profile'
 import Home from './pages/home'
+import useAuthStore from './store/auth'
 
 const routes = [
   {
@@ -59,13 +60,16 @@ const routes = [
 function App() {
   const routeList = useRoutes(routes)
   const isDownloaded = useTTSStore((s) => s.isDownloaded)
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
+
+  const shouldRunSetup = isLoggedIn && !isDownloaded
 
   return (
     <>
       {routeList}
       <DownloadProgressCard />
 
-      {!isDownloaded && <InitialSetup />}
+      {shouldRunSetup && <InitialSetup />}
     </>
   )
 }
